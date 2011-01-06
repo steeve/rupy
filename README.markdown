@@ -39,12 +39,14 @@ Here are the goals:
 
 ### Python named arguments
 
+    # Python
     def foo(arg1, arg2):
         pass
 
+    # Ruby
     foo(:arg2 => "bar2", :arg1 => "bar1")
 
-    or using Ruby 1.9
+    # with Ruby 1.9
     foo(arg2: "bar2", arg1: "bar1")
 
 
@@ -61,6 +63,26 @@ Here are the goals:
             rupy.yield i
         end
     end)
+
+### Catch Exceptions from Ruby
+
+    # Python
+    class MyFirstException(Exception):
+        pass
+
+    class MySecondException(MyFirstException):
+        pass
+
+    def test():
+        raise MySecondException
+
+
+    # Ruby
+    begin
+        test
+    rescue MySecondException => e # perhaps we will need to work out name collisions
+        puts e.message
+    end
 
 
 # RubyPython
