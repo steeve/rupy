@@ -1,3 +1,68 @@
+# rupy
+Rupy is a fork of Zach Raines's awesome [RubyPython](http://raineszm.bitbucket.org/rubypython/) project.
+What I'm trying to accomplish is tighter integration of Python inside Ruby.
+
+Here are the goals:
+
+### Iterate on Iterables with each, map...
+
+    func_returns_an_iterator.each do |x|
+        # do something with x
+    end
+
+### Pass Ruby callbacks or blocks to functions
+
+    # Python
+    def my_sort(callback, x, y):
+        return callback(x, y)
+
+    # Ruby
+    my_sort(:blk, x, y) do |x, y|
+        x > y
+    end
+    my_sort(lambda {|x, y| x > y }, x, y)
+
+
+    # Python
+    def my_method(callback1, callback2, myparams):
+        return callback1() + callback2()
+
+    # Ruby
+    my_method(lambda do
+            # do stuff
+        end,
+        lambda do
+            # do more stuff
+        end
+    )
+
+
+### Python named arguments
+
+    def foo(arg1, arg2):
+        pass
+
+    foo(:arg2 => "bar2", :arg1 => "bar1")
+
+    or using Ruby 1.9
+    foo(arg2: "bar2", arg1: "bar1")
+
+
+### Make Python generators in from Ruby
+
+    # Python
+    def my_method(callback):
+        for i in callback():
+            print i
+
+    # Ruby
+    my_method(lambda do
+        (0..10).each do |i|
+            rupy.yield i
+        end
+    end)
+
+
 # RubyPython
 
 * [RubyPython](http://raineszm.bitbucket.org/rubypython/)
