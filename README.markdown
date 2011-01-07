@@ -4,6 +4,27 @@ What I'm trying to accomplish is tighter integration of Python inside Ruby.
 
 Here are the goals:
 
+### VirtualEnv support
+
+    RubyPython.start do |config|
+        config.virtualenv = "/path/to/virtualenv"
+    end
+
+### Maybe nice imports ? (if I ever manage to get around those !@# Kernel.bindings)
+
+    Py: from mod2.mod1 import sym as mysym
+    Rb: py :from "mod2.mod1", :import => "sym", :as => "mysym"
+        py :from "mod2.mod1", :import => :sym, :as => :mysym
+        py :from [ :mod2, :mod1 ], :import => :sym, :as => :mysym
+
+    Py: import mod1 as mymod
+    Rb: py :import "mod1", :as => "mymod"
+        py :import :mod1, :as => :mymod
+
+    Py: from mod2.mod1 import *
+    Rb: py :from => "mod2.mod1", :import => :*
+        pyrequire "mod2/mod1" # ruby style imports
+
 ### Iterate on Iterables with each, map...
 
     func_returns_an_iterator.each do |x|
@@ -50,7 +71,7 @@ Here are the goals:
     foo(arg2: "bar2", arg1: "bar1")
 
 
-### Make Python generators in from Ruby
+### Make Python generators from Ruby
 
     # Python
     def my_method(callback):
@@ -80,9 +101,14 @@ Here are the goals:
     # Ruby
     begin
         test
-    rescue MySecondException => e # perhaps we will need to work out name collisions
+    rescue MyFirstException => e # perhaps we will need to work out name collisions
         puts e.message
     end
+
+
+Anyway, these are the goals, so please be patient. If you wanna help, please do !
+
+
 
 
 # RubyPython
