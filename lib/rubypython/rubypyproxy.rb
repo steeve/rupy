@@ -52,7 +52,7 @@ module RubyPython
     #RubyPython checks the attribute dictionary of the wrapped object
     #to check whether it will respond to a method call. This should not
     #return false positives but it may return false negatives. The builitin Ruby
-    #respond_to? method has been aliased to is_real_method?. 
+    #respond_to? method has been aliased to is_real_method?.
     def respond_to?(mname)
       return true if is_real_method?(mname)
       mname = mname.to_s
@@ -90,7 +90,7 @@ module RubyPython
       args = PyObject.convert(*args)
 
       if setter
-        return @pObject.setAttr(name, args[0]) 
+        return @pObject.setAttr(name, args[0])
       end
 
       pFunc = @pObject.getAttr(name)
@@ -161,7 +161,7 @@ module RubyPython
     #    => [1, 'a', 2, 'b']
     #    irb(main):005:0> RubyPython.stop
     #    => true
-    #    
+    #
     #@example Dict
     #    irb(main):001:0> RubyPython.start
     #    => true
@@ -173,7 +173,7 @@ module RubyPython
     #    => [1, 'three']
     #    irb(main):005:0> RubyPython.stop
     #    => true
-    
+
     def to_a
       iter = self.__iter__
       ary = []
@@ -183,6 +183,14 @@ module RubyPython
     rescue PythonError => exc
       raise if exc.message !~ /StopIteration/
       ary
+    end
+
+    def methods
+        return pObject.dir.map {|x| x.to_sym }
+    end
+
+    def to_enum
+        return PyEnumerable.new(@pObject)
     end
 
   end
@@ -211,4 +219,21 @@ module RubyPython
   #An object representing an instance of a Python Class.
   class RubyPyInstance < RubyPyProxy
   end
+
+    class PyEnumerable < RubyPyProxy
+        include Enumerable
+
+        def each
+            iter = self.__iter__
+            while true
+                begin
+                    yield iter.next
+                rescue RubyPython::PythonError => exc
+                    return if exc.message =~ /StopIteration/
+                end
+            end
+        end
+
+    end
+
 end

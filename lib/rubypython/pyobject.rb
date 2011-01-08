@@ -133,6 +133,12 @@ module RubyPython
       Python.PyCallable_Check(@pointer) != 0
     end
 
+    def dir
+        return self.class.new(Python.PyObject_Dir(@pointer)).rubify.map do |x|
+            x.to_sym
+        end
+    end    
+
     #Tests whether the wrapped object is a Python class (both new and old
     #style).
     def class?

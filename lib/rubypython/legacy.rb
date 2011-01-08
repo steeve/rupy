@@ -1,15 +1,15 @@
 require 'rubypython'
 
 module RubyPython::LegacyMode
-  class << self
-    def setup_legacy
-      RubyPython.legacy_mode = true
-    end
+    class << self
+        def setup_legacy
+            RubyPython.legacy_mode = true
+        end
 
-    def teardown_legacy
-      RubyPython.legacy_mode = false
+        def teardown_legacy
+            RubyPython.legacy_mode = false
+        end
     end
-  end
 end
 
 RubyPython::LegacyMode.setup_legacy

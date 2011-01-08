@@ -23,6 +23,7 @@ module RubyPython
     #@return [PythonError] an error enscapsulating the Python error
     def self.handle_error
       rbType, rbValue, rbTraceback = fetch()
+      p rbTraceback
 
       if not rbValue.null?
         msg = rbValue.getAttr("__str__").callObject PyObject.buildArgTuple

@@ -9,7 +9,7 @@ module RubyPython
     PYTHON_VERSION = Open3.popen3("python --version") { |i,o,e| e.read}.chomp.split[1].to_f
     PYTHON_NAME = "python#{PYTHON_VERSION}"
     LIB_NAME = "lib#{PYTHON_NAME}"
-    LIB_EXT = FFI::Platform::LIBSUFFIX
+    LIB_EXT = "a" #FFI::Platform::LIBSUFFIX
     LIB = File.join(`python -c "import sys; print(sys.prefix)"`.chomp,
       "lib", "#{PYTHON_NAME}", "config", "#{LIB_NAME}.#{LIB_EXT}")
     @ffi_libs = [FFI::DynamicLibrary.open(LIB, FFI::DynamicLibrary::RTLD_LAZY|FFI::DynamicLibrary::RTLD_GLOBAL)]
@@ -32,6 +32,7 @@ module RubyPython
     attach_function :PyObject_HasAttrString, [:pointer, :string], :int
     attach_function :PyObject_GetAttrString, [:pointer, :string], :pointer
     attach_function :PyObject_SetAttrString, [:pointer, :string, :pointer], :int
+    attach_function :PyObject_Dir, [:pointer], :pointer
 
     attach_function :PyObject_Compare, [:pointer, :pointer], :int
 
