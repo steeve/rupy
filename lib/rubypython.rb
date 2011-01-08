@@ -139,5 +139,10 @@ module RubyPython
             imp = import("imp")
             imp.load_source("activate_this", File.join(File.dirname(OPTIONS[:python]), "activate_this.py"))
         end
+
+        def start_from_virtualenv(virtualenv)
+            start(:python => File.join(virtualenv, "bin", "python"))
+            activate
+        end
     end
 end
