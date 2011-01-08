@@ -1,24 +1,39 @@
 require 'ffi'
 require 'open3'
+require_relative "config"
 
 module RubyPython
     #This module provides access to the Python C API functions via the Ruby ffi
     #gem. Documentation for these functions may be found [here](http://docs.python.org/c-api/). Likewise the FFI gem documentation may be found [here](http://rdoc.info/projects/ffi/ffi).
     module Python
         extend FFI::Library
-        PYTHON_VERSION = Open3.popen3("python --version") { |i,o,e| e.read}.chomp.split[1].to_f
-        PYTHON_NAME = "python#{PYTHON_VERSION}"
-        LIB_NAME = "lib#{PYTHON_NAME}"
-        LIB_EXT = "a" #FFI::Platform::LIBSUFFIX
-        LIB = File.join(`python -c "import sys; print(sys.prefix)"`.chomp,
-                        "lib", "#{PYTHON_NAME}", "config", "#{LIB_NAME}.#{LIB_EXT}")
-        @ffi_libs = [FFI::DynamicLibrary.open(LIB, FFI::DynamicLibrary::RTLD_LAZY|FFI::DynamicLibrary::RTLD_GLOBAL)]
-
         #The class is a little bit of a hack to extract the address of global
         #structs. If someone knows a better way please let me know.
         class DummyStruct < FFI::Struct
             layout :dummy_var, :int
         end
+
+        PYTHON = (OPTIONS[:python] or `python -c "import sys; print sys.executable"`.chomp)
+        PYTHON_VERSION = `#{PYTHON} -c 'import sys; print "%d.%d" % sys.version_info[:2]'`.chomp
+
+        def self.find_python_lib
+            python_lib_path = File.join(`#{PYTHON} -c "import sys; print(sys.prefix)"`.chomp,
+              "lib", "python#{PYTHON_VERSION}", "config")
+            for ext in [ FFI::Platform::LIBSUFFIX, "so", "a", "dll" ]
+                lib = File.join(python_lib_path, "libpython#{PYTHON_VERSION}.#{ext}")
+                if File.exists?(lib)
+                    p lib
+                    return lib
+                    break
+                end
+            end
+            return nil
+        end
+
+        PYTHON_LIB = find_python_lib
+        @ffi_libs = [ FFI::DynamicLibrary.open(
+          PYTHON_LIB,
+          FFI::DynamicLibrary::RTLD_LAZY|FFI::DynamicLibrary::RTLD_GLOBAL) ]
 
         #Python interpreter startup and shutdown
         attach_function :Py_IsInitialized, [], :int

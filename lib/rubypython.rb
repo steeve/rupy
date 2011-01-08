@@ -1,9 +1,4 @@
-require 'rubypython/core_ext/string'
-require 'rubypython/python'
-require 'rubypython/pythonerror'
-require 'rubypython/pyobject'
-require 'rubypython/rubypyproxy'
-require 'rubypython/pymainclass'
+require "rubypython/config"
 
 
 #This module provides the direct user interface for the RubyPython extension.
@@ -62,12 +57,23 @@ module RubyPython
         #    RubyPython.stop
         attr_accessor :legacy_mode
 
+        def req_all
+            require 'rubypython/core_ext/string'
+            require 'rubypython/python'
+            require 'rubypython/pythonerror'
+            require 'rubypython/pyobject'
+            require 'rubypython/rubypyproxy'
+            require 'rubypython/pymainclass'
+        end
+
         #Starts ups the Python interpreter. This method **must** be run
         #before using any Python code. The only alternatives are use of the
         #{session} and {run} methods.
         #@return [Boolean] returns true if the interpreter was started here
         #    and false otherwise
-        def start
+        def start(options = {})
+            OPTIONS.merge!(options)
+            req_all
             if Python.Py_IsInitialized != 0
                 return false
             end
@@ -81,6 +87,7 @@ module RubyPython
         #@return [Boolean] returns true if the interpreter was stopped here
         #    and false otherwise
         def stop
+            req_all
             if Python.Py_IsInitialized !=0
                 PyMain.main = nil
                 PyMain.builtin = nil
@@ -98,6 +105,7 @@ module RubyPython
         #@return [RubyPyModule] a proxy object wrapping the requested
         #module
         def import(mod_name)
+            req_all
             pModule = Python.PyImport_ImportModule mod_name
             if(PythonError.error?)
                 raise PythonError.handle_error
@@ -125,6 +133,11 @@ module RubyPython
             start
             result = module_eval(&block)
             stop
+        end
+
+        def activate
+            imp = import("imp")
+            imp.load_source("activate_this", File.join(File.dirname(OPTIONS[:python]), "activate_this.py"))
         end
     end
 end

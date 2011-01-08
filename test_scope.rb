@@ -1,10 +1,32 @@
-def test(var, bind)
-    bind.eval("b = 5")
-    bind.eval("p local_variables")
-    bind.eval("lambda { |x| #{var} = x }").call(42)
+require "rubygems"
+#$:.unshift File.join(File.dirname(__FILE__), 'lib')
+require "ffi"
+require "blankslate"
+#require "rubypython/config"
+
+require "rubypython"
+#require "rubypython/rubypyproxy"
+
+
+
+RubyPython.start :python => "/Users/smorin/projects/popeye.old/epg/bin/python"
+RubyPython.activate
+
+p RubyPython.import("lxml")
+
+sys = RubyPython.import("sys")
+sys.path.append(".")
+
+p sys.methods
+
+mymod = RubyPython.import("mymod")
+
+n = mymod.get_generator.to_enum
+
+n.each_with_index do |i, x|
+    p i
+    p x
 end
 
-test(:a, Kernel.binding)
-p local_variables
 
-p a
+RubyPython.stop
