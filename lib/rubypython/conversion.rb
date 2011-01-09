@@ -173,12 +173,12 @@ module RubyPython
             end
 
             defn = Python::PyMethodDef.new
-            defn[:ml_name] = FFI::MemoryPointer.from_string("test1")
+            defn[:ml_name] = FFI::MemoryPointer.from_string("Rupy::Proc::%s" % rObj.object_id)
             defn[:ml_meth] = proc
             defn[:ml_flags] = Python::METH_VARARGS
-            defn[:ml_doc] = FFI::MemoryPointer.from_string("Test 1 2 3 4")
+            defn[:ml_doc] = nil
 
-            ret = Python.PyCFunction_New(defn, nil)
+            return Python.PyCFunction_New(defn, nil)
         end
 
 
