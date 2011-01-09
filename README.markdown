@@ -2,13 +2,57 @@
 Rupy is a fork of Zach Raines's awesome [RubyPython](http://raineszm.bitbucket.org/rubypython/) project.
 What I'm trying to accomplish is tighter integration of Python inside Ruby.
 
-Here are the goals:
+## What's new
 
-### VirtualEnv support
+### Custom Python Support
 
-    RubyPython.start do |config|
-        config.virtualenv = "/path/to/virtualenv"
+    RubyPython.start(:python => "/path/to/my/python")
+
+
+### VirtualEnv Support
+
+    # Easy Method
+    RubyPython.start_from_virtualenv("/path/to/virtualenv")
+
+    # Other method
+    RubyPython.start(:python => "/path/to/virtualenv/bin/python")
+    RubyPython.activate
+
+
+### Iterator support
+
+    # Python
+    def readfile():
+        for line in open("/some/file"):
+            yield line
+
+    # Ruby
+    readfile.to_enum.each do |line|
+        puts line
     end
+
+
+### Python to Ruby callbacks
+
+    # Python
+    def dosomething(callback):
+        print callback(5)
+
+    # Ruby
+    dosomething(lambda do |value|
+        value * 2
+    end)
+
+    def mycallback(value)
+        return value * 2
+    end
+
+    dosomething(method(:mycallback))
+
+
+
+
+## What's planned
 
 ### Maybe nice imports ? (if I ever manage to get around those !@# Kernel.bindings)
 
@@ -24,38 +68,6 @@ Here are the goals:
     Py: from mod2.mod1 import *
     Rb: py :from => "mod2.mod1", :import => :*
         pyrequire "mod2/mod1" # ruby style imports
-
-### Iterate on Iterables with each, map...
-
-    func_returns_an_iterator.each do |x|
-        # do something with x
-    end
-
-### Pass Ruby callbacks or blocks to functions
-
-    # Python
-    def my_sort(callback, x, y):
-        return callback(x, y)
-
-    # Ruby
-    my_sort(:blk, x, y) do |x, y|
-        x > y
-    end
-    my_sort(lambda {|x, y| x > y }, x, y)
-
-
-    # Python
-    def my_method(callback1, callback2, myparams):
-        return callback1() + callback2()
-
-    # Ruby
-    my_method(lambda do
-            # do stuff
-        end,
-        lambda do
-            # do more stuff
-        end
-    )
 
 
 ### Python named arguments
