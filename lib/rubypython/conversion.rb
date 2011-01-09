@@ -99,6 +99,10 @@ module RubyPython
                     rtopFalse
                 when Symbol
                     rtopSymbol rObj
+                when Proc
+                    rtopFunction rObj
+                when Method
+                    rtopFunction rObj
                 when nil
                     rtopNone
                 else
@@ -161,6 +165,20 @@ module RubyPython
             end
 
             rb_hash
+        end
+
+        def self.rtopFunction(rObj)
+            proc = FFI::Function.new(:pointer, [:pointer, :pointer]) do |p_self, p_args|
+                PyObject.new(rObj.call(*ptorTuple(p_args))).pointer
+            end
+
+            defn = Python::PyMethodDef.new
+            defn[:ml_name] = FFI::MemoryPointer.from_string("test1")
+            defn[:ml_meth] = proc
+            defn[:ml_flags] = Python::METH_VARARGS
+            defn[:ml_doc] = FFI::MemoryPointer.from_string("Test 1 2 3 4")
+
+            ret = Python.PyCFunction_New(defn, nil)
         end
 
 

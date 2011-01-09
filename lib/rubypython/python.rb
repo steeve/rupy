@@ -13,6 +13,8 @@ module RubyPython
             layout :dummy_var, :int
         end
 
+        METH_VARARGS = 0x0001
+
         PYTHON = (OPTIONS[:python] or `python -c "import sys; print sys.executable"`.chomp)
         PYTHON_VERSION = `#{PYTHON} -c 'import sys; print "%d.%d" % sys.version_info[:2]'`.chomp
 
@@ -22,7 +24,6 @@ module RubyPython
             for ext in [ FFI::Platform::LIBSUFFIX, "so", "a", "dll" ]
                 lib = File.join(python_lib_path, "libpython#{PYTHON_VERSION}.#{ext}")
                 if File.exists?(lib)
-                    p lib
                     return lib
                     break
                 end
@@ -34,6 +35,9 @@ module RubyPython
         @ffi_libs = [ FFI::DynamicLibrary.open(
           PYTHON_LIB,
           FFI::DynamicLibrary::RTLD_LAZY|FFI::DynamicLibrary::RTLD_GLOBAL) ]
+
+        #Function methods
+        attach_function :PyCFunction_New, [:pointer, :pointer], :pointer
 
         #Python interpreter startup and shutdown
         attach_function :Py_IsInitialized, [], :int
@@ -123,5 +127,11 @@ module RubyPython
                    :ob_type, :pointer
         end
 
+        class PyMethodDef < FFI::Struct
+            layout :ml_name, :pointer,
+                   :ml_meth, :pointer,
+                   :ml_flags, :int,
+                   :ml_doc, :pointer
+        end
     end
 end

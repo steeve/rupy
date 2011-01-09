@@ -101,7 +101,7 @@ module RubyPython
                 else
                     pTuple = PyObject.buildArgTuple(*args)
                     pReturn = pFunc.callObject(pTuple)
-                    if(PythonError.error?)
+                    if PythonError.error?
                         raise PythonError.handle_error
                     end
                 end
