@@ -64,6 +64,7 @@ module RubyPython
             require 'rubypython/pyobject'
             require 'rubypython/rubypyproxy'
             require 'rubypython/pymainclass'
+            require 'rubypython/pygenerator'
         end
 
         #Starts ups the Python interpreter. This method **must** be run

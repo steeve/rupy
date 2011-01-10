@@ -14,6 +14,8 @@ module RubyPython
         end
 
         METH_VARARGS = 0x0001
+        PY_FILE_INPUT = 257
+        PY_EVAL_INPUT = 258
 
         PYTHON = (OPTIONS[:python] or `python -c "import sys; print sys.executable"`.chomp)
         PYTHON_VERSION = `#{PYTHON} -c 'import sys; print "%d.%d" % sys.version_info[:2]'`.chomp
@@ -38,7 +40,12 @@ module RubyPython
 
         #Function methods
         attach_function :PyCFunction_New, [:pointer, :pointer], :pointer
-
+        attach_function :PyRun_String, [:string, :int, :pointer, :pointer], :pointer
+        attach_function :PyRun_SimpleString, [:string], :pointer
+        attach_function :Py_CompileString, [:string, :string, :int], :pointer
+        attach_function :PyEval_EvalCode, [:pointer, :pointer, :pointer], :pointer
+        attach_function :PyErr_SetString, [:pointer, :string], :void
+        
         #Python interpreter startup and shutdown
         attach_function :Py_IsInitialized, [], :int
         attach_function :Py_Initialize, [], :void
@@ -93,6 +100,9 @@ module RubyPython
         attach_function :PyDict_GetItem, [:pointer, :pointer], :pointer
 
         #Error Methods
+        attach_variable :PyExc_Exception, DummyStruct.by_ref
+        attach_variable :PyExc_StopIteration, DummyStruct.by_ref
+        attach_function :PyErr_SetNone, [:pointer], :void
         attach_function :PyErr_Fetch, [:pointer, :pointer, :pointer], :void
         attach_function :PyErr_Occurred, [], :pointer
         attach_function :PyErr_Clear, [], :void

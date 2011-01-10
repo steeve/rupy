@@ -105,6 +105,8 @@ module RubyPython
                     rtopFunction rObj
                 when nil
                     rtopNone
+                when PyObject
+                    rObj.pointer
                 else
                     raise UnsupportedConversion.new("Unsupported type for RTOP conversion." )
             end
@@ -179,6 +181,10 @@ module RubyPython
             defn[:ml_doc] = nil
 
             return Python.PyCFunction_New(defn, nil)
+        end
+
+        def self.rtopGenerator(rObj)
+
         end
 
 

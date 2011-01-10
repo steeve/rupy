@@ -50,6 +50,20 @@ What I'm trying to accomplish is tighter integration of Python inside Ruby.
     dosomething(method(:mycallback))
 
 
+### Python-style Generators
+
+    # Python
+    def test_generator(callback):
+        for i in callback():
+            print "Got %d" % i
+
+    # Ruby
+    test_generator(RubyPython.generator do
+        (0..10).each do |i|
+            Fiber.yield i
+        end
+    end)
+
 
 
 ## What's planned
