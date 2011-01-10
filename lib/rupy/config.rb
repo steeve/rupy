@@ -1,0 +1,3 @@
+module Rupy
+    OPTIONS = {}
+end

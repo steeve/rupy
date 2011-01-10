@@ -1,6 +1,7 @@
-require 'rubypython/python'
-require 'rubypython/macros'
-module RubyPython
+require 'rupy/python'
+require 'rupy/macros'
+
+module Rupy
     #This modules encapsulates the work of converting between native Ruby and
     #Python types. Unsupported conversions raise {UnsupportedConversion}.
     module Conversion

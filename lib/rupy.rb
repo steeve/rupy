@@ -1,4 +1,4 @@
-require "rubypython/config"
+require "rupy/config"
 
 
 #This module provides the direct user interface for the RubyPython extension.
@@ -28,7 +28,7 @@ require "rubypython/config"
 #attempt to convert any return value from Python to a native Ruby type, and only
 #return a proxy if conversion is not possible. For further examples see
 #{RubyPython.legacy_mode}.
-module RubyPython
+module Rupy
 
     class << self
 
@@ -58,13 +58,13 @@ module RubyPython
         attr_accessor :legacy_mode
 
         def req_all
-            require 'rubypython/core_ext/string'
-            require 'rubypython/python'
-            require 'rubypython/pythonerror'
-            require 'rubypython/pyobject'
-            require 'rubypython/rubypyproxy'
-            require 'rubypython/pymainclass'
-            require 'rubypython/pygenerator'
+            require 'rupy/core_ext/string'
+            require 'rupy/python'
+            require 'rupy/pythonerror'
+            require 'rupy/pyobject'
+            require 'rupy/rubypyproxy'
+            require 'rupy/pymainclass'
+            require 'rupy/pygenerator'
         end
 
         #Starts ups the Python interpreter. This method **must** be run
@@ -92,9 +92,9 @@ module RubyPython
             if Python.Py_IsInitialized !=0
                 PyMain.main = nil
                 PyMain.builtin = nil
-                RubyPython::Operators.send :class_variable_set, '@@operator', nil
+                Rupy::Operators.send :class_variable_set, '@@operator', nil
                 Python.Py_Finalize
-                RubyPython::PyObject::AutoPyPointer.current_pointers.clear
+                Rupy::PyObject::AutoPyPointer.current_pointers.clear
                 return true
             end
             false

@@ -1,9 +1,9 @@
-require 'rubypython/python'
-require 'rubypython/macros'
-require 'rubypython/conversion'
+require 'rupy/python'
+require 'rupy/macros'
+require 'rupy/conversion'
 require 'ffi'
 
-module RubyPython
+module Rupy
     #This object is an opaque wrapper around the C PyObject\* type used by the
     #python C API. This class **should not** be used by the end user. They
     #should instead make use of the {RubyPyProxy} class and its

@@ -1,7 +1,7 @@
-require 'rubypython/blankobject'
+require 'rupy/blankobject'
 require 'singleton'
 
-module RubyPython
+module Rupy
     # A singleton object providing access to the python \_\_main\_\_ and
     # \_\_builtin\_\_ modules.  This can be conveniently accessed through the
     # already instaniated PyMain constant.  The \_\_main\_\_ namespace is
@@ -19,13 +19,13 @@ module RubyPython
         #@return [RubyPyModule] a proxy object wrapping the Python \__main\__
         #namespace.
         def main
-            @main||=RubyPython.import "__main__"
+            @main ||= Rupy.import "__main__"
         end
 
         #@return [RubyPyModule] a proxy object wrapping the Python \__builtin\__
         #namespace.
         def builtin
-            @builtin||=RubyPython.import "__builtin__"
+            @builtin ||= Rupy.import "__builtin__"
         end
 
         #Delegates any method calls on this object to the Python \__main\__ or

@@ -1,22 +1,49 @@
 # rupy
 Rupy is a fork of Zach Raines's awesome [RubyPython](http://raineszm.bitbucket.org/rubypython/) project.
-What I'm trying to accomplish is tighter integration of Python inside Ruby.
 
-## What's new
+## Description
 
-### Custom Python Support
+Rupy is a gem that make it possible to instanciate a Python VM inside the Ruby VM,
+thanks to the Python C API. Allowing you to effectively call Python code (and back)
+from Ruby!
+The calls and marshaling are done using FFI.
 
-    RubyPython.start(:python => "/path/to/my/python")
+## Why ?
+
+Because I'm in love with both languages and want to be able to take what's best from each.
+This is an idea that was in my head for quite some time, and seeing that Zach Raine didn't
+develop (well, not much) RubyPython more, I decided to implement what was missing to address
+my use cases.
+
+## How to use
+
+### Basic usage
+
+    require "rupy"
+
+    # start the Python VM
+    Rupy.start
+
+    cPickle = Rupy.import("cPickle")
+    p cPickle.dumps("Testing rupy").rubify
+
+    # stop the Python VM
+    Rupy.stop
 
 
-### VirtualEnv Support
+### Custom Python
 
-    # Easy Method
-    RubyPython.start_from_virtualenv("/path/to/virtualenv")
+    Ruby.start(:python => "/path/to/my/python")
 
-    # Other method
-    RubyPython.start(:python => "/path/to/virtualenv/bin/python")
-    RubyPython.activate
+
+### VirtualEnv
+
+    # Easy
+    Rupy.start_from_virtualenv("/path/to/virtualenv")
+
+    # Or verbose
+    Rupy.start(:python => "/path/to/virtualenv/bin/python")
+    Rupy.activate
 
 
 ### Iterator support
@@ -60,7 +87,7 @@ What I'm trying to accomplish is tighter integration of Python inside Ruby.
     # Ruby
     test_generator(RubyPython.generator do
         (0..10).each do |i|
-            Fiber.yield i
+            Rupy.yield i
         end
     end)
 
@@ -97,20 +124,6 @@ What I'm trying to accomplish is tighter integration of Python inside Ruby.
     foo(arg2: "bar2", arg1: "bar1")
 
 
-### Make Python generators from Ruby
-
-    # Python
-    def my_method(callback):
-        for i in callback():
-            print i
-
-    # Ruby
-    my_method(lambda do
-        (0..10).each do |i|
-            rupy.yield i
-        end
-    end)
-
 ### Catch Exceptions from Ruby
 
     # Python
@@ -132,12 +145,11 @@ What I'm trying to accomplish is tighter integration of Python inside Ruby.
     end
 
 
-Anyway, these are the goals, so please be patient. If you wanna help, please do !
 
+## RubyPython
 
-
-
-# RubyPython
+As I mentioned above, most of the code linking the 2 VMs is from Zach Raines's
+[RubyPython](http://raineszm.bitbucket.org/rubypython/) gem.
 
 * [RubyPython](http://raineszm.bitbucket.org/rubypython/)
 
@@ -146,7 +158,7 @@ Anyway, these are the goals, so please be patient. If you wanna help, please do 
 RubyPython is a bridge between the Ruby and Python interpreters. It embeds a
 running Python interpreter in the application's process using FFI and
 provides a means for wrapping and converting Python objects.
- 
+
 ## FEATURES/PROBLEMS:
 
 ### Features
@@ -194,7 +206,7 @@ There are several things to note about the code above:
 1. We used to\_a to convert a python iterable type to a Ruby array.
 1. We called rubify before we printed the objects so that they would be displayed as native Ruby objects.
 1. We stopped the interpreter after we were done with RubyPython.stop.
-	
+
 ## REQUIREMENTS:
 	
 * Python >= 2.4, < 3.0

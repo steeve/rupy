@@ -1,8 +1,8 @@
-require 'rubypython/python'
-require 'rubypython/macros'
+require 'rupy/python'
+require 'rupy/macros'
 
 
-module RubyPython
+module Rupy
 
     #Raised when an error occurs in the Python interpreter.
     class PythonError < Exception

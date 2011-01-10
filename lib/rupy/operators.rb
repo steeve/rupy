@@ -1,4 +1,4 @@
-module RubyPython
+module Rupy
     #A mixin module to provide method delegation to a proxy class. This is done
     #either by delegating to methods defined on the wrapped object or by using the
     #Python _operator_ module. A large number of the methods are dynamically
@@ -8,7 +8,7 @@ module RubyPython
         #Provides access to the Python _operator_ module.
         #@return[RubyPython::RubyPyModule]
         def self.operator_
-            @@operator ||= RubyPython.import('operator')
+            @@operator ||= Rupy.import('operator')
         end
 
         #Creates a method to delegate a binary operation. The result of the

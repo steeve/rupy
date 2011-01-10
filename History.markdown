@@ -1,3 +1,9 @@
+## 0.4.0 2011-xx-xx
+* Enhancements
+  * Python/Ruby callbacks
+  * Virtualenv support
+  * Python-style generators with Ruby
+
 ## 0.3.0 2010-09-06
 * Major Enhancements
   * Version 0.3.0 represents an almost complete rewrite of the RubyPython codebase.

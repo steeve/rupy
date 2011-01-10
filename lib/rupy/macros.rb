@@ -1,7 +1,7 @@
 require 'ffi'
-require 'rubypython/python'
+require 'rupy/python'
 
-module RubyPython
+module Rupy
     #Contains Python C API macros reimplmented in Ruby. For internal use only.
     module Macros
         def self.Py_TYPE(pObjPointer)

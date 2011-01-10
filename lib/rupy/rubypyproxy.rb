@@ -1,10 +1,10 @@
-require 'rubypython/pythonerror'
-require 'rubypython/pyobject'
-require 'rubypython/conversion'
-require 'rubypython/operators'
-require 'rubypython/blankobject'
+require 'rupy/pythonerror'
+require 'rupy/pyobject'
+require 'rupy/conversion'
+require 'rupy/operators'
+require 'rupy/blankobject'
 
-module RubyPython
+module Rupy
     #This is the object that the end user will most often be interacting
     #with. It holds a reference to an object in the Python VM an delegates
     #method calls to it, wrapping and returning the results. The user should
@@ -35,7 +35,7 @@ module RubyPython
         def _wrap(pyobject)
             if pyobject.class?
                 RubyPyClass.new(pyobject)
-            elsif RubyPython.legacy_mode
+            elsif Rupy.legacy_mode
                 pyobject.rubify
             else
                 RubyPyProxy.new(pyobject)
@@ -228,7 +228,7 @@ module RubyPython
             while true
                 begin
                     yield iter.next
-                rescue RubyPython::PythonError => exc
+                rescue Rupy::PythonError => exc
                     return if exc.message =~ /StopIteration/
                 end
             end
