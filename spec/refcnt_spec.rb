@@ -3,12 +3,12 @@ require File.dirname(__FILE__) + '/spec_helper.rb'
 def get_refcnt(pobject)
   raise 'Cannot work with a nil object' if pobject.nil?
 
-  if pobject.kind_of? RubyPython::RubyPyProxy
+  if pobject.kind_of? Rupy::RubyPyProxy
     pobject = pobject.pObject.pointer
-  elsif pobject.kind_of? RubyPython::PyObject
+  elsif pobject.kind_of? Rupy::PyObject
     pobject = pobject.pointer
   end
-  struct = RubyPython::Python::PyObjectStruct.new pobject
+  struct = Rupy::Python::PyObjectStruct.new pobject
   struct[:ob_refcnt]
 end
 
@@ -17,14 +17,14 @@ include TestConstants
 describe 'Reference Counting' do
 
   before :all do
-    RubyPython.start
-    @sys = RubyPython.import 'sys'
+    Rupy.start
+    @sys = Rupy.import 'sys'
     @sys.path.append './spec/python_helpers'
-    @objects = RubyPython.import 'objects'
+    @objects = Rupy.import 'objects'
   end
 
   after :all do
-    RubyPython.stop
+    Rupy.stop
   end
 
   it "should be one for a new object" do
@@ -39,7 +39,7 @@ describe 'Reference Counting' do
     get_refcnt(pyObj).should == (refcnt + 1)
   end
 
-  describe RubyPython::PyObject do
+  describe Rupy::PyObject do
 
     describe "#xIncref" do
       it "should increase the reference count" do

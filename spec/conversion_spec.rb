@@ -1,15 +1,15 @@
 require File.dirname(__FILE__) + '/spec_helper.rb'
 
 include TestConstants
-describe RubyPython::Conversion do
+describe Rupy::Conversion do
   include RubyPythonStartStop
 
-  subject { RubyPython::Conversion }
+  subject { Rupy::Conversion }
 
   before do
-    sys = RubyPython.import 'sys'
+    sys = Rupy.import 'sys'
     sys.path.append './spec/python_helpers'
-    @objects = RubyPython.import 'objects'
+    @objects = Rupy.import 'objects'
   end
 
   context "when converting from Python to Ruby" do
@@ -53,7 +53,7 @@ describe RubyPython::Conversion do
       it "should convert #{rb_type} to #{py_type}" do
         py_object_ptr = subject.rtopObject(input)
         output = @objects.__send__(rb_type.sub(' ', '_')).pObject.pointer
-        RubyPython::Python.PyObject_Compare(py_object_ptr, output).should == 0
+        Rupy::Python.PyObject_Compare(py_object_ptr, output).should == 0
       end
     end
 

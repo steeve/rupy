@@ -9,7 +9,7 @@ rescue LoadError
 end
 
 $:.unshift(File.dirname(__FILE__) + '/../lib')
-require 'rubypython'
+require 'rupy'
 
 module TestConstants
   #REDEFINE THESE SO THEY ARE VISIBILE
@@ -35,17 +35,17 @@ def run_python_command(cmd)
   IO.popen("python -c '#{cmd}'") { |f| f.gets.chomp}
 end
 
-class RubyPython::RubyPyProxy
+class Rupy::RubyPyProxy
   [:should, :should_not, :class].each { |m| reveal(m) }
 end
 
 share_as :RubyPythonStartStop do
   before do
-    RubyPython.start
+    Rupy.start
   end
 
   after do
-    RubyPython.stop
+    Rupy.stop
   end
 end
 

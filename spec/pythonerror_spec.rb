@@ -1,10 +1,10 @@
 require File.dirname(__FILE__) + '/spec_helper.rb'
 
-describe RubyPython::PythonError do
+describe Rupy::PythonError do
   include RubyPythonStartStop
 
   def cause_error
-    RubyPython::Python.PyImport_ImportModule("wat")
+    Rupy::Python.PyImport_ImportModule("wat")
   end
 
   describe "#error?" do

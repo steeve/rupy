@@ -1,10 +1,10 @@
 require File.dirname(__FILE__) + '/spec_helper.rb'
 
-describe RubyPython::PyMainClass do
+describe Rupy::PyMainClass do
   include TestConstants
   include RubyPythonStartStop
 
-  subject { RubyPython::PyMain }
+  subject { Rupy::PyMain }
 
   it "should delegate to builtins" do
     subject.float(AnInt).rubify.should == AnInt.to_f

@@ -1,16 +1,16 @@
 require File.dirname(__FILE__) + '/spec_helper.rb'
 
-describe RubyPython::PyObject do
+describe Rupy::PyObject do
   include RubyPythonStartStop
   include TestConstants
 
   before do
-    @string = RubyPython.import('string').pObject
-    @urllib2 = RubyPython.import('urllib2').pObject
-    @builtin = RubyPython.import("__builtin__")
-    sys = RubyPython.import 'sys'
+    @string = Rupy.import('string').pObject
+    @urllib2 = Rupy.import('urllib2').pObject
+    @builtin = Rupy.import("__builtin__")
+    sys = Rupy.import 'sys'
     sys.path.append './spec/python_helpers/'
-    @objects = RubyPython.import('objects')
+    @objects = Rupy.import('objects')
   end
 
   describe ".new" do

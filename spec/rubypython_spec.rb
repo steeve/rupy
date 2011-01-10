@@ -1,62 +1,62 @@
 require File.dirname(__FILE__) + '/spec_helper.rb'
 
-describe RubyPython do
+describe Rupy do
   include RubyPythonStartStop
 
   describe "#import" do
     it "should handle multiple imports" do
       lambda do
-        RubyPython.import 'cPickle'
-        RubyPython.import 'urllib'
+        Rupy.import 'cPickle'
+        Rupy.import 'urllib'
       end.should_not raise_exception
     end
 
     it "should propagate Python errors" do
       lambda do
-        RubyPython.import 'nonExistentModule'
-      end.should raise_exception(RubyPython::PythonError)
+        Rupy.import 'nonExistentModule'
+      end.should raise_exception(Rupy::PythonError)
     end
 
     it "should return a RubyPyModule" do
-      RubyPython.import('urllib2').should be_a(RubyPython::RubyPyModule)
+      Rupy.import('urllib2').should be_a(Rupy::RubyPyModule)
     end
   end
 
 end
 
-describe RubyPython, "#session" do
+describe Rupy, "#session" do
 
   it "should start interpreter" do
-    RubyPython.session do
-      cPickle = RubyPython.import "cPickle"
+    Rupy.session do
+      cPickle = Rupy.import "cPickle"
       cPickle.loads("(dp1\nS'a'\nS'n'\ns(I1\nS'2'\ntp2\nI4\ns.").rubify.should == {"a"=>"n", [1, "2"]=>4}
     end
   end
 
   it "should stop the interpreter" do
-    RubyPython.session do
-      cPickle = RubyPython.import "cPickle"
+    Rupy.session do
+      cPickle = Rupy.import "cPickle"
     end
 
-    RubyPython.stop.should be_false
+    Rupy.stop.should be_false
   end
 end
 
-describe RubyPython, "#run" do
+describe Rupy, "#run" do
 
   it "should start interpreter" do
-    RubyPython.run do
+    Rupy.run do
       cPickle = import "cPickle"
       cPickle.loads("(dp1\nS'a'\nS'n'\ns(I1\nS'2'\ntp2\nI4\ns.").rubify.should == {"a"=>"n", [1, "2"]=>4}
     end
   end
 
   it "should stop the interpreter" do
-    RubyPython.run do
+    Rupy.run do
       cPickle = import "cPickle"
     end
 
-    RubyPython.stop.should be_false
+    Rupy.stop.should be_false
   end
 
 end

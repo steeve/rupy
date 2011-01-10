@@ -2,26 +2,26 @@ require File.dirname(__FILE__) + '/spec_helper.rb'
 
 
 include TestConstants
-describe RubyPython::RubyPyProxy do
+describe Rupy::RubyPyProxy do
   include RubyPythonStartStop
 
   before do
-    @a = RubyPython::PyObject.new "a"
-    @b = RubyPython::PyObject.new "b"
-    @builtin = RubyPython.import("__builtin__").pObject
-    @string = RubyPython.import("string").pObject
+    @a = Rupy::PyObject.new "a"
+    @b = Rupy::PyObject.new "b"
+    @builtin = Rupy.import("__builtin__").pObject
+    @string = Rupy.import("string").pObject
 
     @two = described_class.new 2
     @six = described_class.new 6
 
-    @sys = RubyPython.import 'sys'
+    @sys = Rupy.import 'sys'
     @sys.path.append './spec/python_helpers'
-    @objects = RubyPython.import 'objects'
+    @objects = Rupy.import 'objects'
   end
 
   describe "#new" do
     it "should accept a PyObject instance" do
-      rbPyObject = RubyPython::PyObject.new AString
+      rbPyObject = Rupy::PyObject.new AString
       lambda {described_class.new rbPyObject}.should_not raise_exception
     end
 
@@ -54,7 +54,7 @@ describe RubyPython::RubyPyProxy do
       ["a hash", AHash]
     ].each do |title, obj|
       it "should faithfully unwrap #{title}" do
-        pyObject = RubyPython::PyObject.new obj
+        pyObject = Rupy::PyObject.new obj
         proxy = described_class.new pyObject
         proxy.rubify.should == pyObject.rubify
       end
@@ -157,8 +157,8 @@ describe RubyPython::RubyPyProxy do
     end
 
     it "should return a class as a RubyPyClass" do
-      urllib2 = RubyPython.import('urllib2')
-      urllib2.Request.should be_a(RubyPython::RubyPyClass)
+      urllib2 = Rupy.import('urllib2')
+      urllib2.Request.should be_a(Rupy::RubyPyClass)
     end
   end
 
@@ -241,8 +241,8 @@ describe RubyPython::RubyPyProxy do
 
 
   it "should delegate object equality" do
-    urllib_a = RubyPython.import('urllib')
-    urllib_b = RubyPython.import('urllib')
+    urllib_a = Rupy.import('urllib')
+    urllib_b = Rupy.import('urllib')
     urllib_a.should == urllib_b
   end
 
