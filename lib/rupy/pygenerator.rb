@@ -38,13 +38,16 @@ def rupy_generator(callback):
         end
 
         def generator
-            fib = Fiber.new do
-                yield
-                Python.PyErr_SetNone(Python.PyExc_StopIteration)
-                FFI::Pointer::NULL
+            return lambda do |*args|
+                fib = Fiber.new do
+                    yield *args
+                    Python.PyErr_SetNone(Python.PyExc_StopIteration)
+                    FFI::Pointer::NULL
+                end
+                generator_type.__call__(lambda do
+                    fib.resume
+                end)
             end
-
-            return lambda { generator_type.__call__(lambda { fib.resume }).pObject.pointer }
         end
 
         def yield(*args)

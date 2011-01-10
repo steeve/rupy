@@ -172,7 +172,12 @@ module Rupy
 
         def self.rtopFunction(rObj)
             proc = FFI::Function.new(:pointer, [:pointer, :pointer]) do |p_self, p_args|
-                PyObject.new(rObj.call(*ptorTuple(p_args))).pointer
+                retval = rObj.call(*ptorTuple(p_args))
+                pObject = retval.is_a?(RubyPyProxy) ? retval.pObject : PyObject.new(retval)
+
+                # make sure the refcount is >1 when pObject is destroyed
+                pObject.xIncref
+                pObject.pointer
             end
 
             defn = Python::PyMethodDef.new
@@ -183,11 +188,6 @@ module Rupy
 
             return Python.PyCFunction_New(defn, nil)
         end
-
-        def self.rtopGenerator(rObj)
-
-        end
-
 
         #Converts a pointer to a Python object into a native ruby type, if
         #possible. Otherwise raises an error.
