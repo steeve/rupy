@@ -1,4 +1,5 @@
-require 'spec/rake/spectask'
+require 'rake'
+require 'rspec/rake/spectask'
 require 'yard'
 
 desc "Run all examples"

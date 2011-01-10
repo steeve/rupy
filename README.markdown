@@ -162,7 +162,7 @@ Note: RubyPython has been tested on Mac OS 10.5.x
 	
 ## Install
 
-    [sudo] gem install siwu-rupy --source https://gems.github.com
+    gem install rupy
 
 ## License
 
