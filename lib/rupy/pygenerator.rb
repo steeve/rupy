@@ -8,14 +8,6 @@ require "rupy/rubypyproxy"
 
 module Rupy
     class << self
-        def eval(code)
-            globals = PyObject.new({
-                "__builtins__" => PyMain.builtin.pObject,
-            })
-            empty_hash = PyObject.new({})
-            ptr = Python.PyRun_String(code, Python::PY_FILE_INPUT, globals.pointer, empty_hash.pointer)
-        end
-        
         def generator_type
             @generator_type ||= lambda do
                 code = <<-eof
