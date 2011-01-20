@@ -28,9 +28,9 @@ module Rupy
 
         #Handles the job of wrapping up anything returned by a {RubyPyProxy}
         #instance. The behavior differs depending on the value of
-        #{RubyPython.legacy_mode}. If legacy mode is inactive, every returned
+        #{Rupy.legacy_mode}. If legacy mode is inactive, every returned
         #object is wrapped by an instance of {RubyPyProxy}. If legacy mode is
-        #active, RubyPython first attempts to convert the returned object to a
+        #active, Rupy first attempts to convert the returned object to a
         #native Ruby type, and then only wraps the object if this fails.
         def _wrap(pyobject)
             if pyobject.class?
@@ -49,7 +49,7 @@ module Rupy
         #Moves the old respond_to? method to is_real_method?
         alias :is_real_method? :respond_to?
 
-        #RubyPython checks the attribute dictionary of the wrapped object
+        #Rupy checks the attribute dictionary of the wrapped object
         #to check whether it will respond to a method call. This should not
         #return false positives but it may return false negatives. The builitin Ruby
         #respond_to? method has been aliased to is_real_method?.
@@ -112,7 +112,7 @@ module Rupy
             return _wrap(pReturn)
         end
 
-        #RubyPython will attempt to translate the wrapped object into a native
+        #Rupy will attempt to translate the wrapped object into a native
         #Ruby object. This will only succeed for simple builtin type.
         def rubify
             @pObject.rubify
@@ -151,27 +151,27 @@ module Rupy
         #dictionary's keys.
         #@return [Array<RubyPyProxy>]
         #@example List
-        #    irb(main):001:0> RubyPython.start
+        #    irb(main):001:0> Rupy.start
         #    => true
-        #    irb(main):002:0> a_list = RubyPython::RubyPyProxy.new [1, 'a', 2, 'b']
+        #    irb(main):002:0> a_list = Rupy::RubyPyProxy.new [1, 'a', 2, 'b']
         #    => [1, 'a', 2, 'b']
-        #    irb(main):003:0> a_list.kind_of? RubyPython::RubyPyProxy
+        #    irb(main):003:0> a_list.kind_of? Rupy::RubyPyProxy
         #    => true
         #    irb(main):004:0> a_list.to_a
         #    => [1, 'a', 2, 'b']
-        #    irb(main):005:0> RubyPython.stop
+        #    irb(main):005:0> Rupy.stop
         #    => true
         #
         #@example Dict
-        #    irb(main):001:0> RubyPython.start
+        #    irb(main):001:0> Rupy.start
         #    => true
-        #    irb(main):002:0> a_dict = RubyPython::RubyPyProxy.new({1 => '2', :three => [4,5]})
+        #    irb(main):002:0> a_dict = Rupy::RubyPyProxy.new({1 => '2', :three => [4,5]})
         #    => {1: '2', 'three': [4, 5]}
-        #    irb(main):003:0> a_dict.kind_of? RubyPython::RubyPyProxy
+        #    irb(main):003:0> a_dict.kind_of? Rupy::RubyPyProxy
         #    => true
         #    irb(main):004:0> a_dict.to_a
         #    => [1, 'three']
-        #    irb(main):005:0> RubyPython.stop
+        #    irb(main):005:0> Rupy.stop
         #    => true
 
         def to_a

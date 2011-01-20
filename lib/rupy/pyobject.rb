@@ -18,7 +18,7 @@ module Rupy
         class AutoPyPointer < FFI::AutoPointer
             class << self
                 #Keeps track of which objects are associated with the currently running
-                #Python interpreter, so that RubyPython knows not to try to decrease the
+                #Python interpreter, so that Rupy knows not to try to decrease the
                 #reference counts of the others when garbage collecting.
                 attr_accessor :current_pointers
 

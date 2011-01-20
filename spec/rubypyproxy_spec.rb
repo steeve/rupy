@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/spec_helper.rb'
 
 include TestConstants
 describe Rupy::RubyPyProxy do
-  include RubyPythonStartStop
+  include RupyStartStop
 
   before do
     @a = Rupy::PyObject.new "a"
@@ -68,7 +68,7 @@ describe Rupy::RubyPyProxy do
     end
 
     it "should gracefully handle lack of defined __repr__" do
-      lambda { @objects.RubyPythonMockObject.inspect }.should_not raise_exception
+      lambda { @objects.RupyMockObject.inspect }.should_not raise_exception
     end
 
   end
@@ -79,7 +79,7 @@ describe Rupy::RubyPyProxy do
     end
 
     it "should gracefully handle lack of defined __str__" do
-      lambda { @objects.RubyPythonMockObject.to_s }.should_not raise_exception
+      lambda { @objects.RupyMockObject.to_s }.should_not raise_exception
     end
   end
 
@@ -102,7 +102,7 @@ describe Rupy::RubyPyProxy do
 
   describe "#respond_to?" do
     it "should return true for getters" do
-      @objects.should respond_to(:RubyPythonMockObject)
+      @objects.should respond_to(:RupyMockObject)
     end
 
     it "should return false for undefined methods" do
@@ -189,8 +189,8 @@ describe Rupy::RubyPyProxy do
 
     describe "#equal?" do
       it "be true for proxies representing the same object" do
-        obj1 = @objects.RubyPythonMockObject
-        obj2 = @objects.RubyPythonMockObject
+        obj1 = @objects.RupyMockObject
+        obj2 = @objects.RupyMockObject
         obj1.should equal(obj2)
       end
 

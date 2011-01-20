@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/spec_helper.rb'
 
 include TestConstants
 describe Rupy::Conversion do
-  include RubyPythonStartStop
+  include RupyStartStop
 
   subject { Rupy::Conversion }
 
@@ -31,7 +31,7 @@ describe Rupy::Conversion do
     end
 
     it "should return an FFI::Pointer when it cannot convert" do
-      unconvertable = @objects.RubyPythonMockObject.pObject.pointer
+      unconvertable = @objects.RupyMockObject.pObject.pointer
       subject.ptorObject(unconvertable).should be_a_kind_of(FFI::Pointer)
     end
   end

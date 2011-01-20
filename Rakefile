@@ -15,7 +15,7 @@ Spec::Rake::SpecTask.new('spec:rcov') do |t|
 end
 
 YARD::Rake::YardocTask.new do |t|
-  t.options = [ '--markup','markdown', '--title', 'RubyPython Documentation' ]
+  t.options = [ '--markup','markdown', '--title', 'Rupy Documentation' ]
 end
 
 Dir['tasks/**/*.rake'].each { |rake| load rake }

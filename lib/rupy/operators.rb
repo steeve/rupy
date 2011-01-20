@@ -6,14 +6,14 @@ module Rupy
     #operators that can be overloaded are delegated.
     module Operators
         #Provides access to the Python _operator_ module.
-        #@return[RubyPython::RubyPyModule]
+        #@return[Rupy::RubyPyModule]
         def self.operator_
             @@operator ||= Rupy.import('operator')
         end
 
         #Creates a method to delegate a binary operation. The result of the
         #operation will follow the conversion rules appropriate to the current mode
-        #of operation as set by {RubyPython.legacy_mode}.
+        #of operation as set by {Rupy.legacy_mode}.
         #@param[Symbol, String] rname The name of the Ruby method for this operation
         #@param[String] pname The name of the Python magic method to which this
         #method should be delegated.
@@ -38,7 +38,7 @@ module Rupy
 
         #Creates a method to delegate a relational operator. The result of the
         #operation will follow the conversion rules appropriate to the current mode
-        #of operation as set by {RubyPython.legacy_mode}. These methods are
+        #of operation as set by {Rupy.legacy_mode}. These methods are
         #implemented with calls the _operator_ module.
         #@param[Symbol, String] rname The name of the Ruby method for this operation
         #@param[String] pname The name of the Python magic method to which this

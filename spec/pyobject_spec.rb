@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/spec_helper.rb'
 
 describe Rupy::PyObject do
-  include RubyPythonStartStop
+  include RupyStartStop
   include TestConstants
 
   before do
@@ -172,7 +172,7 @@ describe Rupy::PyObject do
   describe "#function_or_method?" do
 
     it "should be true for a method" do
-      mockObjClass = @objects.RubyPythonMockObject.pObject
+      mockObjClass = @objects.RupyMockObject.pObject
       mockObjClass.getAttr('square_elements').should be_a_function_or_method
     end
 
@@ -186,7 +186,7 @@ describe Rupy::PyObject do
     end
 
     it "should return false for a class" do
-      @objects.RubyPythonMockObject.pObject.should_not be_a_function_or_method
+      @objects.RupyMockObject.pObject.should_not be_a_function_or_method
     end
 
   end
@@ -194,7 +194,7 @@ describe Rupy::PyObject do
   describe "#class?" do
 
     it "should return true if wrapped object is an old style class" do
-      @objects.RubyPythonMockObject.pObject.should be_a_class
+      @objects.RupyMockObject.pObject.should be_a_class
     end
 
     it "should return true if wrapped object is an new style class" do
@@ -207,7 +207,7 @@ describe Rupy::PyObject do
     end
 
     it "should return false for an object instance" do
-      @objects.RubyPythonMockObject.new.pObject.should_not be_a_class
+      @objects.RupyMockObject.new.pObject.should_not be_a_class
     end
 
   end
@@ -215,7 +215,7 @@ describe Rupy::PyObject do
   describe "#callable?" do
 
     it "should be true for a method" do
-      mockObjClass = @objects.RubyPythonMockObject.pObject
+      mockObjClass = @objects.RupyMockObject.pObject
       mockObjClass.getAttr('square_elements').should be_callable
     end
 
@@ -229,11 +229,11 @@ describe Rupy::PyObject do
     end
 
     it "should return true for a class" do
-      @objects.RubyPythonMockObject.pObject.should be_callable
+      @objects.RupyMockObject.pObject.should be_callable
     end
 
     it "should return false for a non-callable instance" do
-      @objects.RubyPythonMockObject.new.pObject.should_not be_callable
+      @objects.RupyMockObject.new.pObject.should_not be_callable
     end
 
     specify { described_class.new(6).should_not be_callable }

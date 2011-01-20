@@ -39,7 +39,7 @@ class Rupy::RubyPyProxy
   [:should, :should_not, :class].each { |m| reveal(m) }
 end
 
-share_as :RubyPythonStartStop do
+share_as :RupyStartStop do
   before do
     Rupy.start
   end
