@@ -1,6 +1,6 @@
 require 'ffi'
 require 'open3'
-require_relative "config"
+require 'rupy/config'
 
 module Rupy
     #This module provides access to the Python C API functions via the Ruby ffi
