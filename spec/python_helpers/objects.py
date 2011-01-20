@@ -3,7 +3,7 @@
 def identity(object):
     return object
 
-class RubyPythonMockObject:
+class RupyMockObject:
     STRING = "STRING"
     STRING_LIST = ["STRING1", "STRING2"]
     INT = 1

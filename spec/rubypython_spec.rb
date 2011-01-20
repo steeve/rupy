@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/spec_helper.rb'
 
 describe Rupy do
-  include RubyPythonStartStop
+  include RupyStartStop
 
   describe "#import" do
     it "should handle multiple imports" do

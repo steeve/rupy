@@ -6,7 +6,7 @@ module Rupy
     #Python types. Unsupported conversions raise {UnsupportedConversion}.
     module Conversion
 
-        #Raised when RubyPython does not know how to convert an object from Python
+        #Raised when Rupy does not know how to convert an object from Python
         #to Ruby or vice versa
         class UnsupportedConversion < Exception; end
 

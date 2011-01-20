@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/spec_helper.rb'
 
 describe Rupy::RubyPyClass do
-  include RubyPythonStartStop
+  include RupyStartStop
 
   describe "#new" do
     it "should return a RubyPyInstance" do

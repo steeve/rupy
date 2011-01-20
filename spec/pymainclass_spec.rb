@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/spec_helper.rb'
 
 describe Rupy::PyMainClass do
   include TestConstants
-  include RubyPythonStartStop
+  include RupyStartStop
 
   subject { Rupy::PyMain }
 

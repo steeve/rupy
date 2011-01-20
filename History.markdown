@@ -1,4 +1,5 @@
 ## 0.4.0 2011-xx-xx
+* Forked from RubyPython to become Rupy.
 * Enhancements
   * Python/Ruby callbacks
   * Virtualenv support

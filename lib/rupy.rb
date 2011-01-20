@@ -1,60 +1,60 @@
 require "rupy/config"
 
 
-#This module provides the direct user interface for the RubyPython extension.
+#This module provides the direct user interface for the Rupy extension.
 #
-#RubyPython interfaces to the Python C API via the {Python} module using the
+#Rupy interfaces to the Python C API via the {Python} module using the
 #Ruby FFI gem. However, the end user should only worry about dealing with the
-#methods made avaiable via the RubyPython module.
+#methods made avaiable via the Rupy module.
 #
 #Usage
 #-----
 #It is important to remember that the Python Interpreter must be
 #started before the bridge is functional.  This will start the embedded
 #interpreter. If this approach is used, the user should remember to call
-#RubyPython.stop when they are finished with Python.
+#Rupy.stop when they are finished with Python.
 #@example
-#    RubyPython.start
-#    cPickle = RubyPython.import "cPickle"
-#    puts cPickle.dumps("RubyPython is awesome!").rubify
-#    RubyPython.stop
+#    Rupy.start
+#    cPickle = Rupy.import "cPickle"
+#    puts cPickle.dumps("Rupy is awesome!").rubify
+#    Rupy.stop
 #
 #Legacy Mode vs Normal Mode
 #---------------------------
-#By default RubyPython always returns a proxy class which refers method calls to
-#the wrapped Python object. If you instead would like RubyPython to aggressively
-#attempt conversion of return values, as it did in RubyPython 0.2.x, then you
-#should set {RubyPython.legacy_mode} to true. In this case RubyPython will
+#By default Rupy always returns a proxy class which refers method calls to
+#the wrapped Python object. If you instead would like Rupy to aggressively
+#attempt conversion of return values, as it did in Rupy 0.2.x, then you
+#should set {Rupy.legacy_mode} to true. In this case Rupy will
 #attempt to convert any return value from Python to a native Ruby type, and only
 #return a proxy if conversion is not possible. For further examples see
-#{RubyPython.legacy_mode}.
+#{Rupy.legacy_mode}.
 module Rupy
 
     class << self
 
-        #Determines whether RubyPython is operating in Normal Mode or Legacy Mode.
-        #If legacy_mode is true, RubyPython switches into a mode compatible with
+        #Determines whether Rupy is operating in Normal Mode or Legacy Mode.
+        #If legacy_mode is true, Rupy switches into a mode compatible with
         #versions < 0.3.0. All Python objects returned by method invocations are
-        #automatically converted to natve Ruby Types if RubyPython knows how to do
+        #automatically converted to natve Ruby Types if Rupy knows how to do
         #this. Only if no such conversion is known are the objects wrapped in proxy
-        #objects.  Otherwise RubyPython automatically wraps all returned objects as
+        #objects.  Otherwise Rupy automatically wraps all returned objects as
         #an instance of {RubyPyProxy} or one of its subclasses.
         #@return [Boolean]
         #@example Normal Mode
-        #    RubyPython.start
-        #    string = RubyPython.import 'string'
+        #    Rupy.start
+        #    string = Rupy.import 'string'
         #    ascii_letters = string.ascii_letters # Here ascii_letters is a proxy object
         #    puts ascii_letters.rubify # we use the rubify method to convert it to a
         #                              # native type
-        #    RubyPython.stop
+        #    Rupy.stop
         #
         #@example Legacy Mode
-        #    RubyPython.legacy_mode = true
-        #    RubyPython.start
-        #    string = RubyPython.import 'string'
+        #    Rupy.legacy_mode = true
+        #    Rupy.start
+        #    string = Rupy.import 'string'
         #    ascii_letters = string.ascii_letters # Here ascii_letters is a native ruby string
         #    puts ascii_letters # No explicit conversion is neccessary
-        #    RubyPython.stop
+        #    Rupy.stop
         attr_accessor :legacy_mode
 
         def req_all
@@ -129,7 +129,7 @@ module Rupy
         end
 
         #The same as {session} except that the block is executed within the scope
-        #of the RubyPython module.
+        #of the Rupy module.
         def run(&block)
             start
             result = module_eval(&block)

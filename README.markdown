@@ -157,8 +157,7 @@ As I mentioned above, most of the code linking the 2 VMs is from Zach Raines's
 * Ruby >= 1.8.6
 * You must be able to build the ffi gem under your environment.
 
-Note: RubyPython has been tested on Mac OS 10.5.x
-	
+Note: RubyPython and Rupy have been tested on Mac OS 10.5.x
 	
 ## Install
 

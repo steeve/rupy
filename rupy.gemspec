@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
     s.has_rdoc = 'yard'
     s.post_install_message = File.read("PostInstall.txt")
 
-    s.rdoc_options = ["--markup", "markdown", "--title", "RubyPython Documentation", "--quiet"]
+    s.rdoc_options = ["--markup", "markdown", "--title", "Rupy Documentation", "--quiet"]
     s.require_paths = ["lib"]
     s.requirements = ["Python, ~>2.4"]
     s.rubyforge_project = 'rupy'
