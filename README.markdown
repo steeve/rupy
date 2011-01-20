@@ -165,10 +165,12 @@ Note: RubyPython has been tested on Mac OS 10.5.x
     gem install rupy
 
 ## License
+See License.txt for full details.
 
 (The MIT License)
 
 Copyright (c) 2011 Steeve Morin
+Portions copyright (c) 2008 - 2010 Zach Raines
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
