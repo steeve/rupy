@@ -3,6 +3,7 @@ spec/ldap.yml
 *.gemspec
 pkg/
 *.swp
+*.pyc
 html/
 doc/
 publish/
