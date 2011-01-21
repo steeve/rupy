@@ -2,7 +2,7 @@ require 'ffi'
 require 'rupy/python'
 
 module Rupy
-  #Contains Python C API macros reimplmented in Ruby. For internal use only.
+  # Contains Python C API macros reimplmented in Ruby. For internal use only.
   module Macros
     def self.Py_TYPE(pObjPointer)
       pStruct = Python::PyObjectStruct.new pObjPointer

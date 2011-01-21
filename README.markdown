@@ -1,22 +1,21 @@
 # rupy
-Rupy is a fork of Zach Raines's awesome [RubyPython](http://raineszm.bitbucket.org/rubypython/) project.
+Rupy is a fork of Zach Raines's awesome
+[RubyPython](http://raineszm.bitbucket.org/rubypython/) project.
 
 ## Description
 
-Rupy is a gem that make it possible to instanciate a Python VM inside the Ruby VM,
-thanks to the Python C API. Allowing you to effectively call Python code (and back)
-from Ruby!
-The calls and marshaling are done using FFI.
+Rupy is a gem that make it possible to instanciate a Python VM inside the Ruby
+VM, thanks to the Python C API. Allowing you to effectively call Python code
+(and back) from Ruby! The calls and marshaling are done using FFI.
 
 ## Why ?
 
-Because I'm in love with both languages and want to be able to take what's best from each.
-This is an idea that was in my head for quite some time, and seeing that Zach Raine didn't
-develop (well, not much) RubyPython more, I decided to implement what was missing to address
-my use cases.
+Because I'm in love with both languages and want to be able to take what's best
+from each. This is an idea that was in my head for quite some time, and seeing
+that Zach Raines didn't develop (well, not much) RubyPython more, I decided to
+implement what was missing to address my use cases.
 
 ## How to use
-
 ### Basic usage
 
     require "rupy"
@@ -50,8 +49,8 @@ my use cases.
 
     # Python
     def readfile():
-        for line in open("/some/file"):
-            yield line
+      for line in open("/some/file"):
+        yield line
 
     # Ruby
     readfile.to_enum.each do |line|
@@ -67,55 +66,65 @@ my use cases.
 
     # Ruby
     dosomething(lambda do |value|
-        value * 2
+      value * 2
     end)
 
     def mycallback(value)
-        return value * 2
+      return value * 2
     end
 
     dosomething(method(:mycallback))
-
 
 ### Python-style Generators
 
     # Python
     def test_generator(callback):
-        for i in callback():
-            print "Got %d" % i
+      for i in callback():
+        print "Got %d" % i
 
     # Ruby
     test_generator(Rupy.generator do
-        (0..10).each do |i|
-            Rupy.yield i
-        end
+      (0..10).each do |i|
+        Rupy.yield i
+      end
     end)
 
-
-
 ## What's planned
+There are features that are not currently supported in Rupy that may be
+considered for future releases, dependent on need, interest, and solutions.
 
-### Maybe nice imports ? (if I ever manage to get around those !@# Kernel.bindings)
+### Simpler Imports
+It might be nice to have some nice import helpers provided by Rupy to make the
+interface more seamless and provide advanced import features:
 
-    Py: from mod2.mod1 import sym as mysym
-    Rb: py :from "mod2.mod1", :import => "sym", :as => "mysym"
-        py :from "mod2.mod1", :import => :sym, :as => :mysym
-        py :from [ :mod2, :mod1 ], :import => :sym, :as => :mysym
-
-    Py: import mod1 as mymod
-    Rb: py :import "mod1", :as => "mymod"
-        py :import :mod1, :as => :mymod
-
-    Py: from mod2.mod1 import *
-    Rb: py :from => "mod2.mod1", :import => :*
-        pyrequire "mod2/mod1" # ruby style imports
-
-
-### Python named arguments
+#### Import Aliasing
 
     # Python
+    from mod2.mod1 import sym as mysym
+
+    # Ruby
+    py :from => "mod2.mod1", :import => "sym", :as => "mysym"
+    py :from => "mod2.mod1", :import => :sym, :as => :mysym
+    py :from => [ :mod2, :mod1 ], :import => :sym, :as => :mysym
+
+    # Python
+    import mod1 as mymod
+
+    # Ruby
+    py :import => "mod1", :as => "mymod"
+    py :import => :mod1, :as => :mymod
+
+    # Python
+    from mod2.mod1 import *
+
+    # Ruby
+    py :from => "mod2.mod1", :import => :*
+    pyrequire "mod2/mod1" # ruby style imports
+
+### Python named arguments
+    # Python
     def foo(arg1, arg2):
-        pass
+      pass
 
     # Ruby
     foo(:arg2 => "bar2", :arg1 => "bar1")
@@ -123,33 +132,25 @@ my use cases.
     # with Ruby 1.9
     foo(arg2: "bar2", arg1: "bar1")
 
-
 ### Catch Exceptions from Ruby
 
     # Python
     class MyFirstException(Exception):
-        pass
+      pass
 
     class MySecondException(MyFirstException):
-        pass
+      pass
 
     def test():
-        raise MySecondException
-
+      raise MySecondException
 
     # Ruby
     begin
-        test
-    rescue MyFirstException => e # perhaps we will need to work out name collisions
-        puts e.message
+      test
+    rescue MyFirstException => e
+      # We may need to work out name collisions
+      puts e.message
     end
-
-
-
-## RubyPython
-
-As I mentioned above, most of the code linking the 2 VMs is from Zach Raines's
-[RubyPython](http://raineszm.bitbucket.org/rubypython/) gem.
 
 ## Requirements
 	
@@ -160,8 +161,12 @@ As I mentioned above, most of the code linking the 2 VMs is from Zach Raines's
 Note: RubyPython and Rupy have been tested on Mac OS 10.5.x
 	
 ## Install
-
     gem install rupy
+
+## History
+This project owes a great debt to Zach Raines for RubyPython for the initial
+code. His original code (updated irregularly) can be found on
+[BitBucket](http://raineszm.bitbucket.org/rubypython/).
 
 ## License
 See License.txt for full details.

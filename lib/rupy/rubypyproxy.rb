@@ -5,14 +5,14 @@ require 'rupy/operators'
 require 'rupy/blankobject'
 
 module Rupy
-  #This is the object that the end user will most often be interacting
-  #with. It holds a reference to an object in the Python VM an delegates
-  #method calls to it, wrapping and returning the results. The user should
-  #not worry about reference counting of this object an instance
-  #will decrement its objects reference count when it is garbage collected.
+  # This is the object that the end user will most often be interacting
+  # with. It holds a reference to an object in the Python VM an delegates
+  # method calls to it, wrapping and returning the results. The user should
+  # not worry about reference counting of this object an instance will
+  # decrement its objects reference count when it is garbage collected.
   #
-  #Note: All RubyPyProxy objects become invalid when the Python interpreter
-  #is halted.
+  # Note: All RubyPyProxy objects become invalid when the Python interpreter
+  # is halted.
   class RubyPyProxy < BlankObject
     include Operators
 
@@ -26,12 +26,12 @@ module Rupy
       end
     end
 
-    #Handles the job of wrapping up anything returned by a {RubyPyProxy}
-    #instance. The behavior differs depending on the value of
-    #{Rupy.legacy_mode}. If legacy mode is inactive, every returned
-    #object is wrapped by an instance of {RubyPyProxy}. If legacy mode is
-    #active, Rupy first attempts to convert the returned object to a
-    #native Ruby type, and then only wraps the object if this fails.
+    # Handles the job of wrapping up anything returned by a {RubyPyProxy}
+    # instance. The behavior differs depending on the value of
+    # {Rupy.legacy_mode}. If legacy mode is inactive, every returned object
+    # is wrapped by an instance of {RubyPyProxy}. If legacy mode is active,
+    # Rupy first attempts to convert the returned object to a native Ruby
+    # type, and then only wraps the object if this fails.
     def _wrap(pyobject)
       if pyobject.class?
         RubyPyClass.new(pyobject)
@@ -46,13 +46,13 @@ module Rupy
 
     reveal(:respond_to?)
 
-    #Moves the old respond_to? method to is_real_method?
+    # Moves the old respond_to? method to is_real_method?
     alias :is_real_method? :respond_to?
 
-    #Rupy checks the attribute dictionary of the wrapped object
-    #to check whether it will respond to a method call. This should not
-    #return false positives but it may return false negatives. The builitin Ruby
-    #respond_to? method has been aliased to is_real_method?.
+    # Rupy checks the attribute dictionary of the wrapped object to check
+    # whether it will respond to a method call. This should not return false
+    # positives but it may return false negatives. The builitin Ruby
+    # respond_to? method has been aliased to is_real_method?.
     def respond_to?(mname)
       return true if is_real_method?(mname)
       mname = mname.to_s
@@ -60,28 +60,28 @@ module Rupy
       @pObject.hasAttr(mname)
     end
 
-    #Implements the method call delegation.
+    # Implements the method call delegation.
     def method_missing(name, *args, &block)
       name = name.to_s
 
-      if(name.end_with? "?")
+      if name.end_with? "?"
         begin
           RubyPyProxy.reveal(name.to_sym)
           return self.__send__(name.to_sym, *args, &block)
         rescue RuntimeError => exc
           raise NoMethodError.new(name) if exc.message =~ /Don't know how to reveal/
-            raise
+          raise
         end
       end
 
-      if(name.end_with? "=")
+      if name.end_with? "="
         setter = true
         name.chomp! "="
       else
-        setter=false
+        setter = false
       end
 
-      if(!@pObject.hasAttr(name) and !setter)
+      if !@pObject.hasAttr(name) and !setter
         raise NoMethodError.new(name)
       end
 
@@ -110,68 +110,72 @@ module Rupy
       return _wrap(pReturn)
     end
 
-    #Rupy will attempt to translate the wrapped object into a native
-    #Ruby object. This will only succeed for simple builtin type.
+    # Rupy will attempt to translate the wrapped object into a native Ruby
+    # object. This will only succeed for simple builtin type.
     def rubify
       @pObject.rubify
     end
 
-    #Returns the string representation of the wrapped object via a call to the
-    #object's \_\_repr\_\_ method. Falls back on the default Ruby behavior when
-    #this method cannot be found.
+    # Returns the string representation of the wrapped object via a call to
+    # the object's \_\_repr\_\_ method. Falls back on the default Ruby
+    # behavior when this method cannot be found.
     #
-    #@return [String]
+    # @return [String]
     def inspect
       self.__repr__.rubify rescue _inspect
     rescue
-      class << self; define_method :_inspect, RubyPyProxy.find_hidden_method(:inspect); end
+      class << self;
+        define_method :_inspect, RubyPyProxy.find_hidden_method(:inspect)
+      end
       _inspect
     end
 
-    #Returns the string representation of the wrapped object via a call to the
-    #object's \_\_str\_\_ method. Falls back on the default Ruby behavior when
-    #this method cannot be found.
+    # Returns the string representation of the wrapped object via a call to
+    # the object's \_\_str\_\_ method. Falls back on the default Ruby
+    # behavior when this method cannot be found.
     #
-    #@return [String]
+    # @return [String]
     def to_s
       self.__str__.rubify rescue _to_s
     rescue
-      class << self; define_method :_to_s, RubyPyProxy.find_hidden_method(:to_s); end
+      class << self;
+        define_method :_to_s, RubyPyProxy.find_hidden_method(:to_s)
+      end
       _to_s
     end
 
-    #Converts the wrapped Python object to a Ruby Array. Note that this only converts
-    #one level, so a nested array will remain a proxy object. Only wrapped
-    #objects which have an \_\_iter\_\_ method may be converted using to_a.
+    # Converts the wrapped Python object to a Ruby Array. Note that this
+    # only converts one level, so a nested array will remain a proxy object.
+    # Only wrapped objects which have an \_\_iter\_\_ method may be
+    # converted using to_a.
     #
-    #Note that for Dict objects, this method returns what you would get in
-    #Python, not in Ruby i.e. a_dict.to_a returns an array of the
-    #dictionary's keys.
-    #@return [Array<RubyPyProxy>]
-    #@example List
-    #    irb(main):001:0> Rupy.start
-    #    => true
-    #    irb(main):002:0> a_list = Rupy::RubyPyProxy.new [1, 'a', 2, 'b']
-    #    => [1, 'a', 2, 'b']
-    #    irb(main):003:0> a_list.kind_of? Rupy::RubyPyProxy
-    #    => true
-    #    irb(main):004:0> a_list.to_a
-    #    => [1, 'a', 2, 'b']
-    #    irb(main):005:0> Rupy.stop
-    #    => true
+    # Note that for Dict objects, this method returns what you would get in
+    # Python, not in Ruby i.e. a_dict.to_a returns an array of the
+    # dictionary's keys.
+    # @return [Array<RubyPyProxy>]
+    # @example List
+    #     irb(main):001:0> Rupy.start
+    #     => true
+    #     irb(main):002:0> a_list = Rupy::RubyPyProxy.new [1, 'a', 2, 'b']
+    #     => [1, 'a', 2, 'b']
+    #     irb(main):003:0> a_list.kind_of? Rupy::RubyPyProxy
+    #     => true
+    #     irb(main):004:0> a_list.to_a
+    #     => [1, 'a', 2, 'b']
+    #     irb(main):005:0> Rupy.stop
+    #     => true
     #
-    #@example Dict
-    #    irb(main):001:0> Rupy.start
-    #    => true
-    #    irb(main):002:0> a_dict = Rupy::RubyPyProxy.new({1 => '2', :three => [4,5]})
-    #    => {1: '2', 'three': [4, 5]}
-    #    irb(main):003:0> a_dict.kind_of? Rupy::RubyPyProxy
-    #    => true
-    #    irb(main):004:0> a_dict.to_a
-    #    => [1, 'three']
-    #    irb(main):005:0> Rupy.stop
-    #    => true
-
+    # @example Dict
+    #     irb(main):001:0> Rupy.start
+    #     => true
+    #     irb(main):002:0> a_dict = Rupy::RubyPyProxy.new({1 => '2', :three => [4,5]})
+    #     => {1: '2', 'three': [4, 5]}
+    #     irb(main):003:0> a_dict.kind_of? Rupy::RubyPyProxy
+    #     => true
+    #     irb(main):004:0> a_dict.to_a
+    #     => [1, 'three']
+    #     irb(main):005:0> Rupy.stop
+    #     => true
     def to_a
       iter = self.__iter__
       ary = []
@@ -180,11 +184,11 @@ module Rupy
       end
     rescue PythonError => exc
       raise if exc.message !~ /StopIteration/
-        ary
+      ary
     end
 
     def methods
-      return pObject.dir.map {|x| x.to_sym }
+      return pObject.dir.map { |x| x.to_sym }
     end
 
     def to_enum
@@ -192,16 +196,14 @@ module Rupy
     end
   end
 
-  #A class to wrap Python Modules. It behaves exactly the same as {RubyPyProxy}.
-  #It is just here for Bookkeeping and aesthetics.
-  class RubyPyModule < RubyPyProxy
-  end
+  # A class to wrap Python Modules. It behaves exactly the same as
+  # {RubyPyProxy}. It is just here for Bookkeeping and aesthetics.
+  class RubyPyModule < RubyPyProxy; end
 
-  #A class to wrap Python Classes.
+  # A class to wrap Python Classes.
   class RubyPyClass < RubyPyProxy
-
-    #Create an instance of the wrapped class. This is a workaround for the fact
-    #that Python classes are meant to be callable.
+    # Create an instance of the wrapped class. This is a workaround for the
+    # fact that Python classes are meant to be callable.
     def new(*args)
       args = PyObject.convert(*args)
       pTuple = PyObject.buildArgTuple(*args)
@@ -213,9 +215,8 @@ module Rupy
     end
   end
 
-  #An object representing an instance of a Python Class.
-  class RubyPyInstance < RubyPyProxy
-  end
+  # An object representing an instance of a Python Class.
+  class RubyPyInstance < RubyPyProxy; end
 
   class PyEnumerable < RubyPyProxy
     include Enumerable

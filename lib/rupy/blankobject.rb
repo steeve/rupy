@@ -1,9 +1,8 @@
 require 'blankslate'
 
 module Rupy
-  #An object to be used as a base class for Proxy classes.
-  #It is necessary to define this because no such class exists in Ruby
-  #1.8.x
+  # An object to be used as a base class for Proxy classes. It is necessary
+  # to define this because no such class exists in Ruby 1.8.x.
   class BlankObject < BlankSlate
     class << self
       def hide(name)
