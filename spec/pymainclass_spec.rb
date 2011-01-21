@@ -22,5 +22,4 @@ describe Rupy::PyMainClass do
     subject.x = 2
     subject.x.rubify.should == 2
   end
-
 end

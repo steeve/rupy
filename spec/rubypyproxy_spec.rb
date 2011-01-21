@@ -1,6 +1,5 @@
 require File.dirname(__FILE__) + '/spec_helper.rb'
 
-
 include TestConstants
 describe Rupy::RubyPyProxy do
   include RupyStartStop
@@ -25,7 +24,6 @@ describe Rupy::RubyPyProxy do
       lambda {described_class.new rbPyObject}.should_not raise_exception
     end
 
-
     [
       ["a string", AString],
       ["an int", AnInt],
@@ -40,7 +38,6 @@ describe Rupy::RubyPyProxy do
       it "should convert #{type} to wrapped pObject" do
         described_class.new(input).pObject.rubify.should == output
       end
-
     end
   end
 
@@ -62,7 +59,6 @@ describe Rupy::RubyPyProxy do
   end
 
   describe "#inspect" do
-
     it "should return 'repr' of wrapped object" do
       @six.inspect.should == '6'
     end
@@ -70,7 +66,6 @@ describe Rupy::RubyPyProxy do
     it "should gracefully handle lack of defined __repr__" do
       lambda { @objects.RupyMockObject.inspect }.should_not raise_exception
     end
-
   end
 
   describe "#to_s" do
@@ -101,26 +96,24 @@ describe Rupy::RubyPyProxy do
   end
 
   describe "#respond_to?" do
-    it "should return true for getters" do
+    it "should return true given getters" do
       @objects.should respond_to(:RupyMockObject)
     end
 
-    it "should return false for undefined methods" do
+    it "should return false given undefined methods" do
       @objects.should_not respond_to(:undefined_attr)
     end
 
-    it "should return true for any setter" do
+    it "should return true given any setter" do
       @objects.should respond_to(:any_variable=)
     end
 
-    it "should return true for methods on RubyPyProxy instance" do
+    it "should return true given methods on RubyPyProxy instance" do
       @objects.should respond_to(:inspect)
     end
-
   end
 
   describe "method delegation" do
-
     it "should refer method calls to wrapped object" do
       aProxy = described_class.new(@a)
       bProxy = described_class.new(@b)
@@ -163,7 +156,6 @@ describe Rupy::RubyPyProxy do
   end
 
   describe "when used with an operator" do
-
     [
       '+', '-', '/', '*', '&', '^', '%', '**',
       '>>', '<<', '<=>', '|'
@@ -188,16 +180,15 @@ describe Rupy::RubyPyProxy do
     end
 
     describe "#equal?" do
-      it "be true for proxies representing the same object" do
+      it "be true given proxies representing the same object" do
         obj1 = @objects.RupyMockObject
         obj2 = @objects.RupyMockObject
         obj1.should equal(obj2)
       end
 
-      it "should be false for objects which are different" do
+      it "should be false given objects which are different" do
         @two.should_not equal(@six)
       end
-
     end
 
     it "should allow list indexing" do
@@ -239,11 +230,9 @@ describe Rupy::RubyPyProxy do
     end
   end
 
-
   it "should delegate object equality" do
     urllib_a = Rupy.import('urllib')
     urllib_b = Rupy.import('urllib')
     urllib_a.should == urllib_b
   end
-
 end

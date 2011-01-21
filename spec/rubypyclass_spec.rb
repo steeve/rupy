@@ -9,5 +9,4 @@ describe Rupy::RubyPyClass do
       urllib2.Request.new('google.com').should be_a(Rupy::RubyPyInstance)
     end
   end
-
 end

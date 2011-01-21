@@ -18,5 +18,4 @@ describe 'Rupy Legacy Mode Module' do
       Rupy.legacy_mode.should == true
     end
   end
-
 end

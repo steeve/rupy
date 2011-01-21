@@ -15,7 +15,6 @@ end
 include TestConstants
 
 describe 'Reference Counting' do
-
   before :all do
     Rupy.start
     @sys = Rupy.import 'sys'
@@ -27,7 +26,7 @@ describe 'Reference Counting' do
     Rupy.stop
   end
 
-  it "should be one for a new object" do
+  it "should be one given a new object" do
     pyObj = @objects.RupyMockObject.new
     get_refcnt(pyObj).should == 1
   end
@@ -40,7 +39,6 @@ describe 'Reference Counting' do
   end
 
   describe Rupy::PyObject do
-
     describe "#xIncref" do
       it "should increase the reference count" do
         pyObj = @objects.RupyMockObject.new
@@ -60,9 +58,5 @@ describe 'Reference Counting' do
         get_refcnt(pointer).should == refcnt - 1
       end
     end
-
   end
-
-
 end
-

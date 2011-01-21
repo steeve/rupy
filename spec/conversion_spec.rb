@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + '/spec_helper.rb'
 
 include TestConstants
+
 describe Rupy::Conversion do
   include RupyStartStop
 
@@ -36,7 +37,6 @@ describe Rupy::Conversion do
     end
   end
 
-
   context "when converting Ruby to Python" do
     [
       ["an int", "an int", AnInt],
@@ -49,7 +49,6 @@ describe Rupy::Conversion do
       ["python False", "false", false],
       ["python None", "nil", nil]
     ].each do |py_type, rb_type, input|
-
       it "should convert #{rb_type} to #{py_type}" do
         py_object_ptr = subject.rtopObject(input)
         output = @objects.__send__(rb_type.sub(' ', '_')).pObject.pointer
@@ -60,7 +59,5 @@ describe Rupy::Conversion do
     it "should raise an exception when it cannot convert" do
       lambda { subject.rtopObject(Class) }.should raise_exception(subject::UnsupportedConversion)
     end
-
   end
-
 end

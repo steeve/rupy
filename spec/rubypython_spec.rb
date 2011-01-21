@@ -21,11 +21,9 @@ describe Rupy do
       Rupy.import('urllib2').should be_a(Rupy::RubyPyModule)
     end
   end
-
 end
 
 describe Rupy, "#session" do
-
   it "should start interpreter" do
     Rupy.session do
       cPickle = Rupy.import "cPickle"
@@ -43,7 +41,6 @@ describe Rupy, "#session" do
 end
 
 describe Rupy, "#run" do
-
   it "should start interpreter" do
     Rupy.run do
       cPickle = import "cPickle"
@@ -58,5 +55,4 @@ describe Rupy, "#run" do
 
     Rupy.stop.should be_false
   end
-
 end

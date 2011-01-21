@@ -30,7 +30,6 @@ describe Rupy::PythonError do
     end
   end
 
-
   describe "#fetch" do
     it "should make availible Python error type" do
       cause_error
@@ -38,6 +37,4 @@ describe Rupy::PythonError do
       rbType.getAttr("__name__").rubify.should == "ImportError"
     end
   end
-
 end
-

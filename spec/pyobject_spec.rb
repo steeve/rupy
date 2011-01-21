@@ -22,7 +22,6 @@ describe Rupy::PyObject do
       ["a symbol", ASym],
       ["a hash", AHash]
     ].each do |title, obj|
-
       it "should wrap #{title}" do
         lambda { described_class.new(obj) }.should_not raise_exception
       end
@@ -42,12 +41,9 @@ describe Rupy::PyObject do
         end.should_not raise_exception
       end
     end
-
-
   end #new
 
   describe "#rubify" do
-
     [
       ["a string", AString],
       ["an int", AnInt],
@@ -62,9 +58,7 @@ describe Rupy::PyObject do
       it "should faithfully unwrap #{type}" do
         described_class.new(input).rubify.should == output
       end
-
     end
-
   end #rubify
 
   describe "#hasAttr" do
@@ -104,7 +98,6 @@ describe Rupy::PyObject do
   end
 
   describe "#cmp" do
-
     before do
       @less = described_class.new 5
       @greater = described_class.new 10
@@ -122,7 +115,7 @@ describe Rupy::PyObject do
     it "should return -1 when first object is less than the second" do
       @less.cmp(@greater).should == -1
     end
-    
+
     it "should return 1 when first object is greater than the second" do
       @greater.cmp(@less).should == 1
     end
@@ -145,7 +138,6 @@ describe Rupy::PyObject do
       converted = described_class.makeTuple(arg)
       converted.pointer.address.should == arg.pointer.address
     end
-
   end
 
   describe "#callObject" do
@@ -170,29 +162,26 @@ describe Rupy::PyObject do
   end
 
   describe "#function_or_method?" do
-
-    it "should be true for a method" do
+    it "should be true given a method" do
       mockObjClass = @objects.RupyMockObject.pObject
       mockObjClass.getAttr('square_elements').should be_a_function_or_method
     end
 
-    it "should be true for a function" do
+    it "should be true given a function" do
       @objects.pObject.getAttr('identity').should be_a_function_or_method
     end
 
-    xit "should return true for a builtin function" do
+    it "should return true given a builtin function" do
       any = @builtin.pObject.getAttr('any')
       any.should be_a_function_or_method
     end
 
-    it "should return false for a class" do
+    it "should return false given a class" do
       @objects.RupyMockObject.pObject.should_not be_a_function_or_method
     end
-
   end
 
   describe "#class?" do
-
     it "should return true if wrapped object is an old style class" do
       @objects.RupyMockObject.pObject.should be_a_class
     end
@@ -206,33 +195,31 @@ describe Rupy::PyObject do
       strClass.should be_a_class
     end
 
-    it "should return false for an object instance" do
+    it "should return false given an object instance" do
       @objects.RupyMockObject.new.pObject.should_not be_a_class
     end
-
   end
 
   describe "#callable?" do
-
-    it "should be true for a method" do
+    it "should be true given a method" do
       mockObjClass = @objects.RupyMockObject.pObject
       mockObjClass.getAttr('square_elements').should be_callable
     end
 
-    it "should be true for a function" do
+    it "should be true given a function" do
       @objects.pObject.getAttr('identity').should be_callable
     end
 
-    it "should return true for a builtin function" do
+    it "should return true given a builtin function" do
       any = @builtin.pObject.getAttr('any')
       any.should be_callable
     end
 
-    it "should return true for a class" do
+    it "should return true given a class" do
       @objects.RupyMockObject.pObject.should be_callable
     end
 
-    it "should return false for a non-callable instance" do
+    it "should return false given a non-callable instance" do
       @objects.RupyMockObject.new.pObject.should_not be_callable
     end
 
@@ -241,7 +228,6 @@ describe Rupy::PyObject do
   end
 
   describe ".convert" do
-
     it "should not modify PyObjects passed to it" do
       args = AnArray.map { |x| described_class.new(x) }
       described_class.convert(*args).should == args
@@ -257,8 +243,5 @@ describe Rupy::PyObject do
         x.should be_a_kind_of described_class
       end
     end
-
   end
-
 end
-
