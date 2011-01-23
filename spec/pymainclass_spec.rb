@@ -1,9 +1,8 @@
 require File.dirname(__FILE__) + '/spec_helper.rb'
 
-describe Rupy::PyMainClass do
-  include TestConstants
-  include RupyStartStop
+include TestConstants
 
+describe Rupy::PyMainClass do
   subject { Rupy::PyMain }
 
   it "should delegate to builtins" do

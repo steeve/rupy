@@ -2,8 +2,6 @@ require File.dirname(__FILE__) + '/spec_helper.rb'
 
 include TestConstants
 describe Rupy::RubyPyProxy do
-  include RupyStartStop
-
   before do
     @a = Rupy::PyObject.new "a"
     @b = Rupy::PyObject.new "b"
