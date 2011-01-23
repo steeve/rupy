@@ -10,11 +10,15 @@ module Rupy
     end
 
     def self.PyObject_TypeCheck(pObject, pTypePointer)
-      if Py_TYPE(pObject) == pTypePointer
-        1
-      else
-        0
+      type = self.Py_TYPE(pObject)
+
+      [ pTypePointer ].flatten.each do |pointer|
+        if type == pointer
+          return 1
+        end
       end
+
+      return 0
     end
 
     def self.Py_True

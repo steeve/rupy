@@ -123,9 +123,11 @@ module Rupy
     #Tests whether the wrapped object is a function or a method. This is not the
     #same as {#callable?} as many other Python objects are callable.
     def function_or_method?
-      isFunc = (Macros.PyObject_TypeCheck(@pointer, Python.PyFunction_Type.to_ptr) != 0)
-      isMethod = (Macros.PyObject_TypeCheck(@pointer, Python.PyMethod_Type.to_ptr) != 0)
-      isFunc or isMethod
+      check = Macros.PyObject_TypeCheck(@pointer,
+                                        [ Python.PyFunction_Type.to_ptr,
+                                          Python.PyCFunction_Type.to_ptr,
+                                          Python.PyMethod_Type.to_ptr ])
+      check != 0
     end
 
     #Is the wrapped object callable?

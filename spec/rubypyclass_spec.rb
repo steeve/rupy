@@ -1,8 +1,6 @@
 require File.dirname(__FILE__) + '/spec_helper.rb'
 
 describe Rupy::RubyPyClass do
-  include RupyStartStop
-
   describe "#new" do
     it "should return a RubyPyInstance" do
       urllib2 = Rupy.import 'urllib2'

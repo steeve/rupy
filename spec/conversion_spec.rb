@@ -3,8 +3,6 @@ require File.dirname(__FILE__) + '/spec_helper.rb'
 include TestConstants
 
 describe Rupy::Conversion do
-  include RupyStartStop
-
   subject { Rupy::Conversion }
 
   before do

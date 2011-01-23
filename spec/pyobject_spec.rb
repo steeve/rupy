@@ -1,9 +1,8 @@
 require File.dirname(__FILE__) + '/spec_helper.rb'
 
-describe Rupy::PyObject do
-  include RupyStartStop
-  include TestConstants
+include TestConstants
 
+describe Rupy::PyObject do
   before do
     @string = Rupy.import('string').pObject
     @urllib2 = Rupy.import('urllib2').pObject

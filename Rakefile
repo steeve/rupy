@@ -1,15 +1,17 @@
 require 'rake'
-require 'rspec/rake/spectask'
+require 'rspec/core/rake_task'
 require 'yard'
 
 desc "Run all examples"
-Spec::Rake::SpecTask.new('spec') do |t|
-  t.spec_files = FileList['spec/**/*_spec.rb']
+RSpec::Core::RakeTask.new('spec') do |t|
+  t.rspec_opts = %w(-c -f d)
+  t.pattern = 'spec/**/*_spec.rb'
 end
 
 desc "Run all examples with RCov"
-Spec::Rake::SpecTask.new('spec:rcov') do |t|
-  t.spec_files = FileList['spec/**/*.rb']
+RSpec::Core::RakeTask.new('spec:rcov') do |t|
+  t.rspec_opts = %w(-c -f progress)
+  t.pattern = 'spec/**/*_spec.rb'
   t.rcov = true
   t.rcov_opts = ['--exclude', 'spec']
 end

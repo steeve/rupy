@@ -112,17 +112,62 @@ module Rupy
       attach_function :Py_DecRef, [:pointer], :void
 
       #Type Objects
-      attach_variable :PyString_Type, DummyStruct.by_value
-      attach_variable :PyList_Type, DummyStruct.by_value
-      attach_variable :PyInt_Type, DummyStruct.by_value
-      attach_variable :PyLong_Type, DummyStruct.by_value
-      attach_variable :PyFloat_Type, DummyStruct.by_value
-      attach_variable :PyTuple_Type, DummyStruct.by_value
-      attach_variable :PyDict_Type, DummyStruct.by_value
-      attach_variable :PyFunction_Type, DummyStruct.by_value
-      attach_variable :PyMethod_Type, DummyStruct.by_value
-      attach_variable :PyType_Type, DummyStruct.by_value
+      # attach_variable :PyBaseObject_Type, DummyStruct.by_value # built-in 'object' 
+      # attach_variable :PyBaseString_Type, DummyStruct.by_value
+      # attach_variable :PyBool_Type, DummyStruct.by_value
+      # attach_variable :PyBuffer_Type, DummyStruct.by_value
+      # attach_variable :PyByteArrayIter_Type, DummyStruct.by_value
+      # attach_variable :PyByteArray_Type, DummyStruct.by_value
+      attach_variable :PyCFunction_Type, DummyStruct.by_value
+      # attach_variable :PyCObject_Type, DummyStruct.by_value
+      # attach_variable :PyCallIter_Type, DummyStruct.by_value
+      # attach_variable :PyCapsule_Type, DummyStruct.by_value
+      # attach_variable :PyCell_Type, DummyStruct.by_value
+      # attach_variable :PyClassMethod_Type, DummyStruct.by_value
       attach_variable :PyClass_Type, DummyStruct.by_value
+      # attach_variable :PyCode_Type, DummyStruct.by_value
+      # attach_variable :PyComplex_Type, DummyStruct.by_value
+      # attach_variable :PyDictItems_Type, DummyStruct.by_value
+      # attach_variable :PyDictIterItem_Type, DummyStruct.by_value
+      # attach_variable :PyDictIterKey_Type, DummyStruct.by_value
+      # attach_variable :PyDictIterValue_Type, DummyStruct.by_value
+      # attach_variable :PyDictKeys_Type, DummyStruct.by_value
+      # attach_variable :PyDictProxy_Type, DummyStruct.by_value
+      # attach_variable :PyDictValues_Type, DummyStruct.by_value
+      attach_variable :PyDict_Type, DummyStruct.by_value
+      # attach_variable :PyEllipsis_Type, DummyStruct.by_value
+      # attach_variable :PyEnum_Type, DummyStruct.by_value
+      # attach_variable :PyFile_Type, DummyStruct.by_value
+      attach_variable :PyFloat_Type, DummyStruct.by_value
+      # attach_variable :PyFrame_Type, DummyStruct.by_value
+      # attach_variable :PyFrozenSet_Type, DummyStruct.by_value
+      attach_variable :PyFunction_Type, DummyStruct.by_value
+      # attach_variable :PyGen_Type, DummyStruct.by_value
+      # attach_variable :PyGetSetDescr_Type, DummyStruct.by_value
+      # attach_variable :PyInstance_Type, DummyStruct.by_value
+      attach_variable :PyInt_Type, DummyStruct.by_value
+      attach_variable :PyList_Type, DummyStruct.by_value
+      attach_variable :PyLong_Type, DummyStruct.by_value
+      # attach_variable :PyMemberDescr_Type, DummyStruct.by_value
+      # attach_variable :PyMemoryView_Type, DummyStruct.by_value
+      attach_variable :PyMethod_Type, DummyStruct.by_value
+      # attach_variable :PyModule_Type, DummyStruct.by_value
+      # attach_variable :PyNullImporter_Type, DummyStruct.by_value
+      # attach_variable :PyProperty_Type, DummyStruct.by_value
+      # attach_variable :PyRange_Type, DummyStruct.by_value
+      # attach_variable :PyReversed_Type, DummyStruct.by_value
+      # attach_variable :PySTEntry_Type, DummyStruct.by_value
+      # attach_variable :PySeqIter_Type, DummyStruct.by_value
+      # attach_variable :PySet_Type, DummyStruct.by_value
+      # attach_variable :PySlice_Type, DummyStruct.by_value
+      # attach_variable :PyStaticMethod_Type, DummyStruct.by_value
+      attach_variable :PyString_Type, DummyStruct.by_value
+      # attach_variable :PySuper_Type, DummyStruct.by_value # built-in 'super' 
+      # attach_variable :PyTraceBack_Type, DummyStruct.by_value
+      attach_variable :PyTuple_Type, DummyStruct.by_value
+      attach_variable :PyType_Type, DummyStruct.by_value
+      # attach_variable :PyUnicode_Type, DummyStruct.by_value
+      # attach_variable :PyWrapperDescr_Type, DummyStruct.by_value
 
       attach_variable :Py_TrueStruct, :_Py_TrueStruct, DummyStruct.by_value
       attach_variable :Py_ZeroStruct, :_Py_ZeroStruct, DummyStruct.by_value
@@ -133,8 +178,8 @@ module Rupy
       #the first two data members via FFI and always deal with struct pointers
       #there is no need to mess around with the rest of the object.
       class PyObjectStruct < FFI::Struct
-        layout :ob_refcnt, :int,
-          :ob_type, :pointer
+        layout :ob_refcnt, :ssize_t,
+               :ob_type, :pointer
       end
 
       class PyMethodDef < FFI::Struct

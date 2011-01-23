@@ -3,8 +3,6 @@ require File.dirname(__FILE__) + '/spec_helper.rb'
 include TestConstants
 
 describe 'Rupy Legacy Mode Module' do
-  include RupyStartStop
-
   before :all do
     require 'rupy/legacy'
   end
