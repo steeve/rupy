@@ -1,4 +1,5 @@
 require "rupy/config"
+require "rupy/blankobject"
 
 # This module provides the direct user interface for the Rupy extension.
 #
