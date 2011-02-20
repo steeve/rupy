@@ -45,6 +45,17 @@ module Rupy
                end
       block ? block.call(result) : result
     end
+
+    # Called by RubyPython when the interpreter is started or stopped so
+    # that the neccesary preperation or cleanup can be done. For internal
+    # use only.
+    def update(status)
+      case status
+      when :stop
+        @main = nil
+        @builtin = nil
+      end
+    end
   end
 
   PyMain = PyMainClass.instance

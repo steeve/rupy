@@ -5,12 +5,6 @@ include TestConstants
 describe Rupy::Conversion do
   subject { Rupy::Conversion }
 
-  before do
-    sys = Rupy.import 'sys'
-    sys.path.append './spec/python_helpers'
-    @objects = Rupy.import 'objects'
-  end
-
   context "when converting from Python to Ruby" do
     [
       ["an int", "an int", AnInt],
@@ -45,12 +39,15 @@ describe Rupy::Conversion do
       ["a dict", "a hash", AConvertedHash],
       ["python True", "true", true],
       ["python False", "false", false],
-      ["python None", "nil", nil]
-    ].each do |py_type, rb_type, input|
+      ["python None", "nil", nil],
+      ["a function", "a proc", AProc, true]
+    ].each do |py_type, rb_type, input, no_compare|
       it "should convert #{rb_type} to #{py_type}" do
         py_object_ptr = subject.rtopObject(input)
-        output = @objects.__send__(rb_type.sub(' ', '_')).pObject.pointer
-        Rupy::Python.PyObject_Compare(py_object_ptr, output).should == 0
+        unless no_compare
+          output = @objects.__send__(rb_type.sub(' ', '_')).pObject.pointer
+          Rupy::Python.PyObject_Compare(py_object_ptr, output).should == 0
+        end
       end
     end
 

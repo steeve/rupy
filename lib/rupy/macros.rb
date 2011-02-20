@@ -9,6 +9,8 @@ module Rupy
       pStruct[:ob_type]
     end
 
+    # This has been modified from the C API macro to allow for multiple
+    # pointer objects to be passed. It simplifies a number of checks.
     def self.PyObject_TypeCheck(pObject, pTypePointer)
       type = self.Py_TYPE(pObject)
 

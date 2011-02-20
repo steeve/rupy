@@ -13,6 +13,55 @@ module Rupy
   #
   # Note: All RubyPyProxy objects become invalid when the Python interpreter
   # is halted.
+  #
+  # Calling Methods With Blocks
+  # -----------------------------
+  # Any method which is forwarded to a Python object may be called with
+  # a block. The result of the method will passed as the argument to
+  # that block.
+  #
+  # @example Supplying a block to a method call
+  #   irb(main):001:0> Rupy.start
+  #   => true
+  #   irb(main):002:0> Rupy::PyMain.float(10) do |f|
+  #   irb(main):003:1*     2*f.rubify
+  #   irb(main):004:1> end
+  #   => 20.0
+  #   irb(main):005:0> Rupy.stop
+  #   => true
+  #
+  #
+  # Passing Procs and Methods to methods
+  # -------------------------------------
+  # Rupy now supports passing Proc and Method objects to Python
+  # methods. The Proc or Method object must be passed explicitly. As
+  # seen above, supplying a block to a method will result in the return
+  # value of the method call being passed to the block.
+  #
+  # When a Proc or Method is supplied as a callback, then arguments that
+  # it will be called with will be wrapped Python objects.
+  #
+  # @example Passing a Proc to Python
+  #   # Python Code
+  #   def apply_callback(callback, argument):
+  #     return callback(argument)
+  #
+  #   # IRB Session
+  #   irb(main):001:0> Rupy.start
+  #   => true
+  #   irb(main):002:0> sys = Rupy.import 'sys'
+  #   => <module 'sys' (built-in)>
+  #   irb(main):003:0> sys.path.append('.')
+  #   => None
+  #   irb(main):004:0> sample = Rupy.import 'sample'
+  #   => <module 'sample' from './sample.pyc'>
+  #   irb(main):005:0> callback = Proc.new do |arg|
+  #   irb(main):006:1*   arg * 2
+  #   irb(main):007:1> end
+  #   => # <Proc:0x000001018df490@(irb):5>
+  #   irb(main):008:0> sample.apply_callback(callback, 21).rubify
+  #   => 42
+  #   irb(main):009:0> Rupy.stop
   class RubyPyProxy < BlankObject
     include Operators
 
@@ -56,7 +105,7 @@ module Rupy
     def respond_to?(mname)
       return true if is_real_method?(mname)
       mname = mname.to_s
-      return true if mname.end_with? '='
+      return true if mname =~ /=$/
       @pObject.hasAttr(mname)
     end
 
@@ -64,7 +113,7 @@ module Rupy
     def method_missing(name, *args, &block)
       name = name.to_s
 
-      if name.end_with? "?"
+      if name =~ /\?$/
         begin
           RubyPyProxy.reveal(name.to_sym)
           return self.__send__(name.to_sym, *args, &block)
@@ -74,7 +123,7 @@ module Rupy
         end
       end
 
-      if name.end_with? "="
+      if name =~ /=/
         setter = true
         name.chomp! "="
       else
@@ -117,31 +166,23 @@ module Rupy
     end
 
     # Returns the string representation of the wrapped object via a call to
-    # the object's \_\_repr\_\_ method. Falls back on the default Ruby
-    # behavior when this method cannot be found.
+    # the object's \_\_repr\_\_ method.
     #
     # @return [String]
     def inspect
-      self.__repr__.rubify rescue _inspect
-    rescue
-      class << self;
-        define_method :_inspect, RubyPyProxy.find_hidden_method(:inspect)
-      end
-      _inspect
+      self.__repr__.rubify
+    rescue PythonError, NoMethodError
+      Rupy::PyMain.repr(self).rubify
     end
 
-    # Returns the string representation of the wrapped object via a call to
-    # the object's \_\_str\_\_ method. Falls back on the default Ruby
-    # behavior when this method cannot be found.
+    # Returns the string representation of the wrapped object via a call to the
+    # object's \_\_str\_\_ method.
     #
     # @return [String]
     def to_s
-      self.__str__.rubify rescue _to_s
-    rescue
-      class << self;
-        define_method :_to_s, RubyPyProxy.find_hidden_method(:to_s)
-      end
-      _to_s
+      self.__str__.rubify
+    rescue PythonError, NoMethodError
+      Rupy::PyMain.str(self).rubify
     end
 
     # Converts the wrapped Python object to a Ruby Array. Note that this
@@ -150,7 +191,7 @@ module Rupy
     # converted using to_a.
     #
     # Note that for Dict objects, this method returns what you would get in
-    # Python, not in Ruby i.e. a_dict.to_a returns an array of the
+    # Python, not in Ruby i.e. a\_dict.to\_a returns an array of the
     # dictionary's keys.
     # @return [Array<RubyPyProxy>]
     # @example List

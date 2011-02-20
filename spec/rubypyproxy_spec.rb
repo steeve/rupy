@@ -64,6 +64,10 @@ describe Rupy::RubyPyProxy do
     it "should gracefully handle lack of defined __repr__" do
       lambda { @objects.RupyMockObject.inspect }.should_not raise_exception
     end
+
+    it "always tries the 'repr' function if __repr__ produces an error" do
+      Rupy::PyMain.list.inspect.should == run_python_command('print repr(list)').chomp
+    end
   end
 
   describe "#to_s" do
@@ -73,6 +77,10 @@ describe Rupy::RubyPyProxy do
 
     it "should gracefully handle lack of defined __str__" do
       lambda { @objects.RupyMockObject.to_s }.should_not raise_exception
+    end
+
+    it "always tries the 'str' function if __repr__ produces an error" do
+      Rupy::PyMain.list.to_s.should == run_python_command('print str(list)').chomp
     end
   end
 
@@ -121,6 +129,11 @@ describe Rupy::RubyPyProxy do
     it "should raise NoMethodError when method is undefined" do
       aProxy = described_class.new @a
       lambda {aProxy.wat}.should raise_exception(NoMethodError)
+    end
+
+    it "raises NoMethodError when boolean method is undefined" do
+      aProxy = described_class.new @a
+      lambda { aProxy.wat? }.should raise_exception(NoMethodError)
     end
 
     it "should allow methods to be called with no arguments" do

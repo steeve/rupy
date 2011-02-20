@@ -107,6 +107,15 @@ module Rupy
       PyMain.cmp(self, other)
     end
 
+    # Called by Rupy when the interpreter is started or stopped so that the
+    # necessary preparation or cleanup can be done. For internal use only.
+    def self.update(status)
+      case status
+      when :stop
+        @@operator = nil
+      end
+    end
+
     alias_method :eql?, :==
   end
 end

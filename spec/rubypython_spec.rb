@@ -54,3 +54,27 @@ describe Rupy, "#run" do
     Rupy.stop.should be_false
   end
 end
+
+describe Rupy, '#reload_library', :slow => true do
+  it 'leaves Rupy in a stable state' do
+    lambda do 
+      Rupy.instance_eval { reload_library }
+      Rupy.run {}
+    end.should_not raise_exception
+  end
+end
+
+describe Rupy, '.configure', :slow => true do
+  it 'allows python executable to be specified', :unless => `which python2.6`.empty? do
+    Rupy.configure :python_exe => 'python2.6'
+    Rupy.run do
+      sys = Rupy.import 'sys'
+      sys.version.rubify.to_f.should == 2.6
+    end
+  end
+
+  after(:all) do
+    Rupy.clear_options
+    Rupy.instance_eval { reload_library }
+  end
+end

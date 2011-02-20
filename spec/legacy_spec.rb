@@ -15,5 +15,32 @@ describe 'Rupy Legacy Mode Module' do
     it "should enable legacy mode" do
       Rupy.legacy_mode.should == true
     end
+
+    [
+      ["an int", "an int", AnInt],
+      ["a float", "a float", AFloat],
+      ["a string", "a string", AString],
+      ["a list", "an array", AnArray],
+      ["a tuple", "an array", AnArray],
+      ["a dict", "a hash", AConvertedHash],
+      ["python True", "true", true],
+      ["python False", "false", false],
+      ["python None", "nil", nil]
+    ].each do |py_type, rb_type, output|
+      it "implicitly converts #{py_type} to #{rb_type}" do
+        @objects.__send__(py_type.sub(' ', '_')).should == output
+      end
+    end
+
+    [
+      ["proc", AProc],
+      ["method", AMethod]
+    ].each do |rb_type, rb_obj| 
+      it "raises an exception if a #{rb_type} callback is supplied" do
+        lambda do
+          @objects.apply_callback(rb_obj, [1, 1])
+        end.should raise_exception(Rupy::Conversion::UnsupportedConversion)
+      end
+    end
   end
 end

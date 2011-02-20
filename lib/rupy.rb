@@ -1,6 +1,3 @@
-require "rupy/config"
-require "rupy/blankobject"
-
 # This module provides the direct user interface for the Rupy extension.
 #
 # Rupy interfaces to the Python C API via the {Python} module using the Ruby
@@ -29,6 +26,24 @@ require "rupy/blankobject"
 # convert any return value from Python to a native Ruby type, and only
 # return a proxy if conversion is not possible. For further examples see
 # {Rupy.legacy_mode}.
+module Rupy
+  VERSION = '0.5.0'
+
+  # Indicates whether the Python DLL has been loaded.
+  def self.loaded?
+    @loaded
+  end
+end
+
+require 'rupy/blankobject'
+require 'rupy/options'
+require 'rupy/python'
+require 'rupy/pythonerror'
+require 'rupy/pyobject'
+require 'rupy/rubypyproxy'
+require 'rupy/pymainclass'
+require 'rupy/pygenerator'
+
 module Rupy
   class << self
     # Determines whether Rupy is operating in Normal Mode or Legacy Mode. If
@@ -65,17 +80,6 @@ module Rupy
     #     Rupy.stop
     attr_accessor :legacy_mode
 
-    def req_all
-      require 'rupy/core_ext/string'
-      require 'rupy/python'
-      require 'rupy/pythonerror'
-      require 'rupy/pyobject'
-      require 'rupy/rubypyproxy'
-      require 'rupy/pymainclass'
-      require 'rupy/pygenerator'
-    end
-    private :req_all
-
     # Starts up the Python interpreter. This method **must** be run before
     # using any Python code. The only alternatives are use of the {session}
     # and {run} methods.
@@ -103,10 +107,22 @@ module Rupy
     # interpreters in a single Ruby session. This may change in a future
     # version.
     def start(options = {})
-      OPTIONS.merge!(options)
-      req_all
+      Rupy.configure(options)
+
+      unless @loaded
+        @loaded = true
+        reload_library
+      end
+
       return false if Python.Py_IsInitialized != 0
+
+      if @reload
+        reload_library
+        @reload = false
+      end
+
       Python.Py_Initialize
+      notify :start
       true
     end
 
@@ -117,17 +133,13 @@ module Rupy
     # @return [Boolean] returns true if the interpreter was stopped here
     #                   and false otherwise
     def stop
-      req_all
-
-      if Python.Py_IsInitialized != 0
-        PyMain.main = nil
-        PyMain.builtin = nil
-        Rupy::Operators.send :class_variable_set, '@@operator', nil
+      if defined? Python.Py_IsInitialized and Python.Py_IsInitialized != 0
         Python.Py_Finalize
-        Rupy::PyObject::AutoPyPointer.current_pointers.clear
-        return true
+        notify :stop
+        true
+      else
+        false
       end
-      false
     end
 
     # Import a Python module into the interpreter and return a proxy object
@@ -137,7 +149,6 @@ module Rupy
     #
     # @return [RubyPyModule] a proxy object wrapping the requested module
     def import(mod_name)
-      req_all
       pModule = Python.PyImport_ImportModule mod_name
       raise PythonError.handle_error if PythonError.error?
       pymod = PyObject.new pModule
@@ -181,12 +192,6 @@ module Rupy
       result
     end
 
-    def activate
-      imp = import("imp")
-      imp.load_source("activate_this", File.join(File.dirname(OPTIONS[:python]), "activate_this.py"))
-    end
-    private :activate
-
     # Starts up the Python interpreter. This method **must** be run before
     # using any Python code. The only alternatives are use of the {session}
     # and {run} methods.
@@ -211,5 +216,41 @@ module Rupy
       activate
       result
     end
+
+    # Used to activate the virtualenv.
+    def activate
+      imp = import("imp")
+      imp.load_source("activate_this",
+                      File.join(File.dirname(Rupy::Python::PYTHON.python),
+                      "activate_this.py"))
+    end
+    private :activate
+
+    def add_observer(object)
+      @observers ||= []
+      @observers << object
+      true
+    end
+    private :add_observer
+
+    def notify(status)
+      if not @observers.nil?
+        @observers.each do |o|
+          o.update status
+        end
+      end
+    end
+    private :notify
+
+    def reload_library
+      remove_const :Python
+      load Rupy::PYTHON_RB
+      true
+    end
+    private :reload_library
   end
+
+  add_observer PyMain
+  add_observer Operators
+  add_observer PyObject::AutoPyPointer
 end

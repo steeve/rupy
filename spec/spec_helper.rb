@@ -1,18 +1,14 @@
 begin
   require 'rspec'
-  require 'ffi'
 rescue LoadError
   require 'rubygems' unless ENV['NO_RUBYGEMS']
-  gem 'rspec'
   require 'rspec'
-  require 'ffi'
 end
 
-$:.unshift(File.dirname(__FILE__) + '/../lib')
+dir = File.dirname(__FILE__)
+
+$:.unshift(File.join(dir, '..', 'lib'))
 require 'rupy'
-module Rupy
-  req_all
-end
 
 module TestConstants
   # REDEFINE THESE SO THEY ARE VISIBILE
@@ -32,19 +28,28 @@ module TestConstants
     key = k.is_a?(Symbol) ? k.to_s : k
     [key, v]
   end.flatten]
+  AProc = Proc.new { |a1, a2| a1 + a2 }
+  def self.a_method(a1, a2)
+    a1 + a2
+  end
+  AMethod = method(:a_method)
 end
 
 def run_python_command(cmd)
-  IO.popen("python -c '#{cmd}'") { |f| f.gets.chomp }
-end
-
-class Rupy::RubyPyProxy
-  [:should, :should_not, :class].each { |m| reveal(m) }
+  %x(python -c '#{cmd}').chomp
 end
 
 RSpec.configure do |config|
   config.before(:all) do
     Rupy.start
+
+    class Rupy::RubyPyProxy
+      [:should, :should_not, :class].each { |m| reveal(m) }
+    end
+
+    @sys = Rupy.import 'sys'
+    @sys.path.append File.join(dir, 'python_helpers')
+    @objects = Rupy.import 'objects'
   end
 
   config.after(:all) do
