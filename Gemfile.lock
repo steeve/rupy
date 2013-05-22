@@ -1,0 +1,18 @@
+PATH
+  remote: .
+  specs:
+    rupy (0.5.0)
+      blankslate (>= 2.1.2.3)
+      ffi (>= 0.6.3)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    blankslate (3.1.2)
+    ffi (1.8.1-java)
+
+PLATFORMS
+  java
+
+DEPENDENCIES
+  rupy!

@@ -1,19 +1,24 @@
 # -*- encoding: utf-8 -*-
 require File.expand_path(File.dirname(__FILE__) + '/lib/rupy/version')
 
+# lib = File.expand_path('../lib', __FILE__)
+# $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+
+
 Gem::Specification.new do |s|
     s.name = 'rupy'
-    s.version = Rupy::VERSION::STRING
+    s.version = Rupy::VERSION
 
     s.authors = ["Steeve Morin"]
     s.description = 'Python inside Ruby, the unholly alliance!'
     s.email = ["siwuzzz+rupy@gmail.com"]
-    s.extra_rdoc_files = ["License.txt", "PostInstall.txt", "History.markdown"]
+    s.extra_rdoc_files = ["License.rdoc", "PostInstall.txt", "History.rdoc"]
 
-    s.files = ["lib", "spec"].map do |dir|
-        `find #{dir}`.split(/\r?\n\r?/)
-    end.flatten
-    s.files += [ "README.markdown", "PostInstall.txt", "License.txt", "Rakefile" ]
+    # s.files = ["lib", "spec"].map do |dir|
+    #     `find #{dir}`.split(/\r?\n\r?/)
+    # end.flatten
+    # s.files += [ "README.rdoc", "License.rdoc", "Rakefile" ]
+    s.files = Dir['lib/**/*'] + Dir['bin/**/*'] + ['README.rdoc', 'License.rdoc', 'PostInstall.txt']
 
     s.homepage = 'http://github.com/siwu/rupy/'
     s.has_rdoc = 'yard'
