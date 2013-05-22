@@ -26,9 +26,6 @@
 # convert any return value from Python to a native Ruby type, and only
 # return a proxy if conversion is not possible. For further examples see
 # {Rupy.legacy_mode}.
-
-require 'rupy/version'
-
 module Rupy
   # Indicates whether the Python DLL has been loaded.
   def self.loaded?

@@ -1,8 +1,10 @@
 # -*- encoding: utf-8 -*-
-require File.expand_path(File.dirname(__FILE__) + '/lib/rupy/version')
+# require File.expand_path(File.dirname(__FILE__) + '/lib/rupy/version')
 
-# lib = File.expand_path('../lib', __FILE__)
-# $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+lib = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+
+require 'rupy/version'
 
 
 Gem::Specification.new do |s|
