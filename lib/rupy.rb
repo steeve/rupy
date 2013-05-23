@@ -147,10 +147,24 @@ module Rupy
     #
     # @return [RubyPyModule] a proxy object wrapping the requested module
     def import(mod_name)
-      pModule = Python.PyImport_ImportModule mod_name
-      raise PythonError.handle_error if PythonError.error?
-      pymod = PyObject.new pModule
-      RubyPyModule.new(pymod)
+      # handle import method: Rupy.import("cPickle")
+      unless mod_name.include? "."
+        pModule = Python.PyImport_ImportModule mod_name
+        raise PythonError.handle_error if PythonError.error?
+        pymod = PyObject.new pModule
+        RubyPyModule.new(pymod)
+      # handle or Rupy.import("full.path.to.module")
+      else
+        mods = mod_name.split(".") 
+        # lookup primary module (recursion)
+        mod_ptr = self.import(mods.first)
+        mods.drop(1).each do |mod|
+          # resolve trailing modules
+          mod_ptr = mod_ptr.method_missing(mod)
+        end
+        # return final module
+        mod_ptr
+      end
     end
 
     # Execute the given block, starting the Python interperter before its
