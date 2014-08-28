@@ -210,11 +210,11 @@ and seeing that Zach Raines only developed RubyPython sporadically, I decided
 to implement what was missing to address my use cases.
 
 Austin Ziegler: I have a need to control some Python code through a Ruby
-application for a project I'm working on, so I found RubyPython. 
+application for a project I'm working on, so I found RubyPython.
 
 I implemented and submitted a bug fix for Zach's implementation
 and he pointed me to Steeve's fork as something that would be developed more
-frequently. There's 
+frequently.
 
 == History
 This project owes a great debt to Zach Raines for RubyPython for the initial
